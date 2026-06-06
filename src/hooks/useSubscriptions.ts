@@ -32,11 +32,20 @@ export function useSubscriptions(userId: string | undefined) {
           localStorage.setItem(getStorageKey(), JSON.stringify(dbSubs));
         } catch (err: any) {
           console.error("Failed to load subscriptions from Supabase, falling back to cache:", err);
-          setError("فشل جلب الاشتراكات من قاعدة البيانات سحابياً. تم تحميل النسخة المؤقتة.");
+          setError("Failed to fetch subscriptions. Loading local cache... | تعذر جلب الاشتراكات، تم تحميل النسخة المؤقتة.");
           // Fallback to local
           const saved = localStorage.getItem(getStorageKey());
           if (saved) {
-            try { setSubscriptions(JSON.parse(saved)); } catch (e) { setSubscriptions([]); }
+            try { 
+              let parsed = JSON.parse(saved);
+              parsed = parsed.map((s: any) => {
+                if (s.id === '1' && s.name === 'نتفليكس') {
+                  return { ...s, name: 'Netflix', category: 'Entertainment' };
+                }
+                return s;
+              });
+              setSubscriptions(parsed); 
+            } catch (e) { setSubscriptions([]); }
           }
         } finally {
           setLoading(false);
@@ -46,7 +55,14 @@ export function useSubscriptions(userId: string | undefined) {
         const saved = localStorage.getItem(getStorageKey());
         if (saved) {
           try {
-            setSubscriptions(JSON.parse(saved));
+            let parsed = JSON.parse(saved);
+            parsed = parsed.map((s: any) => {
+              if (s.id === '1' && s.name === 'نتفليكس') {
+                return { ...s, name: 'Netflix', category: 'Entertainment' };
+              }
+              return s;
+            });
+            setSubscriptions(parsed);
           } catch (e) {
             setSubscriptions([]);
           }
@@ -55,10 +71,10 @@ export function useSubscriptions(userId: string | undefined) {
           const defaultMock = [
             {
               id: '1',
-              name: 'نتفليكس',
+              name: 'Netflix',
               cost: 15,
               cycle: 'monthly',
-              category: 'ترفيه',
+              category: 'Entertainment',
               nextRenewal: new Date(new Date().setDate(new Date().getDate() + 5)).toISOString(),
               status: 'active',
               color: '#ec4899',
@@ -92,7 +108,7 @@ export function useSubscriptions(userId: string | undefined) {
         await dbAddSubscription(userId, sub);
       } catch (err) {
         console.error("Error adding subscription to Supabase:", err);
-        setError("تعذر حفظ الاشتراك في السحابة؛ تم الحفظ محلياً مؤقتاً.");
+        setError("Failed to save to cloud; saved locally temporarily. | تعذر حفظ الاشتراك في السحابة؛ تم الحفظ محلياً مؤقتاً.");
       }
     }
   };
@@ -117,7 +133,7 @@ export function useSubscriptions(userId: string | undefined) {
         await dbUpdateSubscription(id, updatedSub);
       } catch (err) {
         console.error("Error updating subscription on Supabase:", err);
-        setError("تعذر تحديث الاشتراك في السحابة؛ تم التعديل محلياً.");
+        setError("Failed to update in cloud; saved locally. | تعذر تحديث الاشتراك في السحابة؛ تم التعديل محلياً.");
       }
     }
   };
@@ -142,7 +158,7 @@ export function useSubscriptions(userId: string | undefined) {
         await dbDeleteSubscription(id);
       } catch (err) {
         console.error("Error deleting subscription from Supabase:", err);
-        setError("تعذر إزالة الاشتراك من السحابة؛ تم الحذف محلياً فقط.");
+        setError("Failed to delete from cloud; deleted locally. | تعذر إزالة الاشتراك من السحابة؛ تم الحذف محلياً فقط.");
       }
     }
   };

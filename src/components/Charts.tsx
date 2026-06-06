@@ -2,6 +2,7 @@ import React from 'react';
 import { Subscription } from '../types';
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, Legend } from 'recharts';
 import { useTheme } from '../lib/ThemeContext';
+import { useTranslation } from '../lib/LanguageContext';
 
 interface ChartsProps {
   subscriptions: Subscription[];
@@ -9,6 +10,7 @@ interface ChartsProps {
 
 export function Charts({ subscriptions }: ChartsProps) {
   const { theme } = useTheme();
+  const { t, language } = useTranslation();
   const isDark = theme === 'dark';
   const activeSubs = subscriptions.filter(s => s.status === 'active');
   
@@ -30,7 +32,9 @@ export function Charts({ subscriptions }: ChartsProps) {
 
   return (
     <div className="bg-white dark:bg-[#0f172a] p-8 rounded-xl border border-slate-200 dark:border-slate-800/80 mb-8 shadow-md">
-      <h3 className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest mb-6">توزيع المصاريف حسب الفئة (شهرياً)</h3>
+      <h3 className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest mb-6">
+        {language === 'ar' ? 'توزيع المصاريف حسب الفئة (شهرياً)' : 'Spend Distribution by Category (Monthly)'}
+      </h3>
       {chartData.length > 0 ? (
         <div className="h-[300px] w-full">
           <ResponsiveContainer width="100%" height="100%">
@@ -50,7 +54,7 @@ export function Charts({ subscriptions }: ChartsProps) {
                 ))}
               </Pie>
               <Tooltip 
-                formatter={(value: number) => [`$${value.toFixed(2)}`, 'التكلفة']}
+                formatter={(value: number) => [`$${value.toFixed(2)}`, t('cost')]}
                 contentStyle={{ backgroundColor: tooltipBg, borderRadius: '8px', border: `1px solid ${tooltipBorder}`, color: tooltipText, boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }}
                 itemStyle={{ color: tooltipText }}
               />
@@ -60,7 +64,7 @@ export function Charts({ subscriptions }: ChartsProps) {
         </div>
       ) : (
         <div className="h-[300px] flex items-center justify-center text-slate-400 dark:text-slate-500 border border-dashed border-slate-200 dark:border-slate-800 rounded-2xl">
-          لا يوجد بيانات كافية لعرض الرسم البياني
+          {language === 'ar' ? 'لا يوجد بيانات كافية لعرض الرسم البياني' : 'Not enough data to display chart'}
         </div>
       )}
     </div>
