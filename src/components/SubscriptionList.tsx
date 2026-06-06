@@ -1,5 +1,5 @@
 import React from 'react';
-import { Subscription } from '../types';
+import { Subscription, convertCurrency, CURRENCY_SYMBOLS } from '../types';
 import { differenceInDays, parseISO, format } from 'date-fns';
 import { ar } from 'date-fns/locale';
 import { Edit2, Trash2, CheckCircle2, XCircle } from 'lucide-react';
@@ -9,9 +9,10 @@ interface SubscriptionListProps {
   onEdit: (sub: Subscription) => void;
   onDelete: (id: string) => void;
   renewalAlertDays?: number;
+  localCurrency?: string;
 }
 
-export function SubscriptionList({ subscriptions, onEdit, onDelete, renewalAlertDays = 3 }: SubscriptionListProps) {
+export function SubscriptionList({ subscriptions, onEdit, onDelete, renewalAlertDays = 3, localCurrency = 'USD' }: SubscriptionListProps) {
   if (subscriptions.length === 0) {
     return (
       <div className="bg-[#111] rounded-xl border border-dashed border-[#333] p-12 text-center text-gray-600">
@@ -59,8 +60,27 @@ export function SubscriptionList({ subscriptions, onEdit, onDelete, renewalAlert
                     </div>
                   </td>
                   <td className="px-6 py-4">
-                    <div className="font-semibold text-white">${sub.cost.toFixed(2)}</div>
-                    <div className="text-xs text-gray-500">{sub.cycle === 'monthly' ? 'شهرياً' : 'سنوياً'}</div>
+                    {(() => {
+                      const originalCurrency = sub.currency || 'USD';
+                      const symbolOrigin = CURRENCY_SYMBOLS[originalCurrency] || '$';
+                      const symbolLocal = CURRENCY_SYMBOLS[localCurrency] || '$';
+                      const localValue = convertCurrency(sub.cost, originalCurrency, localCurrency);
+                      const isDifferent = originalCurrency !== localCurrency;
+
+                      return (
+                        <>
+                          <div className="font-semibold text-white">
+                            {sub.cost.toFixed(2)} {symbolOrigin}
+                          </div>
+                          {isDifferent && (
+                            <div className="text-[10px] text-emerald-400 font-bold font-mono mt-0.5" title="معادل بالعملة المحلية">
+                              ≈ {localValue.toFixed(2)} {symbolLocal}
+                            </div>
+                          )}
+                        </>
+                      );
+                    })()}
+                    <div className="text-xs text-gray-500 mt-0.5">{sub.cycle === 'monthly' ? 'شهرياً' : 'سنوياً'}</div>
                   </td>
                   <td className="px-6 py-4">
                     <div className="font-medium text-white">

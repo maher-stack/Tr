@@ -1,7 +1,7 @@
 import React from 'react';
-import { LayoutDashboard, Calculator, Settings, CreditCard, TrendingUp, Coins, Lock } from 'lucide-react';
+import { LayoutDashboard, Calculator, Settings, CreditCard, TrendingUp, Coins, Lock, LineChart, Users, History } from 'lucide-react';
 
-export type PageId = 'dashboard' | 'investment' | 'math' | 'currency' | 'pricing' | 'settings';
+export type PageId = 'dashboard' | 'analytics' | 'team' | 'history' | 'investment' | 'math' | 'currency' | 'pricing' | 'settings';
 
 interface SidebarProps {
   currentPage: PageId;
@@ -10,14 +10,17 @@ interface SidebarProps {
 }
 
 export function Sidebar({ currentPage, onPageChange, isPro }: SidebarProps) {
-  const navItems = [
+  const navItems: Array<{ id: PageId; icon: any; label: string; pro?: boolean }> = [
     { id: 'dashboard', icon: LayoutDashboard, label: 'الرئيسية' },
+    { id: 'analytics', icon: LineChart, label: 'التحليل المالي', pro: true },
+    { id: 'team', icon: Users, label: 'إدارة الفريق', pro: true },
+    { id: 'history', icon: History, label: 'سجل المدفوعات', pro: true },
     { id: 'investment', icon: TrendingUp, label: 'استثمارات', pro: true },
-    { id: 'math', icon: Calculator, label: 'الحاسبة' },
+    { id: 'math', icon: Calculator, label: 'الحاسبة', pro: false },
     { id: 'currency', icon: Coins, label: 'عملات', pro: true },
     { id: 'pricing', icon: CreditCard, label: 'الخطط' },
     { id: 'settings', icon: Settings, label: 'إعدادات' },
-  ] as const;
+  ];
 
   return (
     <aside className="w-64 bg-[#090909] border-l border-[#1f1f1f] flex flex-col h-full shrink-0">

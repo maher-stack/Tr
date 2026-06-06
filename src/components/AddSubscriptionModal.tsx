@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Subscription, CATEGORY_COLORS } from '../types';
+import { Subscription, CATEGORY_COLORS, CURRENCY_LABELS } from '../types';
 import { X } from 'lucide-react';
 
 interface AddSubscriptionModalProps {
@@ -7,9 +7,10 @@ interface AddSubscriptionModalProps {
   onClose: () => void;
   onSave: (sub: Subscription) => void;
   editingSub?: Subscription | null;
+  isPro?: boolean;
 }
 
-export function AddSubscriptionModal({ isOpen, onClose, onSave, editingSub }: AddSubscriptionModalProps) {
+export function AddSubscriptionModal({ isOpen, onClose, onSave, editingSub, isPro = false }: AddSubscriptionModalProps) {
   const [formData, setFormData] = useState<Partial<Subscription>>({});
 
   useEffect(() => {
@@ -20,6 +21,7 @@ export function AddSubscriptionModal({ isOpen, onClose, onSave, editingSub }: Ad
         cycle: 'monthly',
         category: 'أخرى',
         status: 'active',
+        currency: 'USD',
         nextRenewal: new Date().toISOString().split('T')[0],
       });
     }
@@ -39,7 +41,8 @@ export function AddSubscriptionModal({ isOpen, onClose, onSave, editingSub }: Ad
       category: formData.category || 'أخرى',
       status: formData.status as 'active' | 'cancelled',
       nextRenewal: new Date(formData.nextRenewal).toISOString(),
-      color: CATEGORY_COLORS[formData.category || 'أخرى'] || CATEGORY_COLORS['أخرى']
+      color: CATEGORY_COLORS[formData.category || 'أخرى'] || CATEGORY_COLORS['أخرى'],
+      currency: (isPro ? formData.currency : 'USD') || 'USD'
     };
 
     onSave(newSub);
@@ -96,6 +99,30 @@ export function AddSubscriptionModal({ isOpen, onClose, onSave, editingSub }: Ad
                 <option value="yearly">سنوياً</option>
               </select>
             </div>
+          </div>
+
+          <div>
+            <label className="block text-xs font-bold text-gray-500 uppercase tracking-widest mb-2">عملة الدفع</label>
+            {!isPro ? (
+              <div className="flex items-center justify-between px-4 py-2 bg-[#161616]/60 border border-[#2a2a2a] rounded-xl text-gray-400 text-xs">
+                <span>الدولار الأمريكي (USD - $)</span>
+                <span className="text-[9px] font-black text-amber-500 bg-amber-500/10 border border-amber-500/25 px-2 py-1 rounded-lg">
+                  فقط للمحترفين PRO 👑
+                </span>
+              </div>
+            ) : (
+              <select
+                value={formData.currency || 'USD'}
+                onChange={e => setFormData({ ...formData, currency: e.target.value })}
+                className="w-full px-4 py-2.5 bg-[#161616] border border-[#333] rounded-xl focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-all text-white text-xs"
+              >
+                {Object.entries(CURRENCY_LABELS).map(([code, label]) => (
+                  <option key={code} value={code}>
+                    {label}
+                  </option>
+                ))}
+              </select>
+            )}
           </div>
 
           <div>

@@ -14,14 +14,15 @@ interface DashboardProps {
   isPro: boolean;
   onUpgradeClick: () => void;
   renewalAlertDays?: number;
+  localCurrency?: string;
 }
 
-export function Dashboard({ subscriptions, addSubscription, updateSubscription, deleteSubscription, isPro, onUpgradeClick, renewalAlertDays }: DashboardProps) {
+export function Dashboard({ subscriptions, addSubscription, updateSubscription, deleteSubscription, isPro, onUpgradeClick, renewalAlertDays, localCurrency = 'USD' }: DashboardProps) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingSub, setEditingSub] = useState<Subscription | null>(null);
 
   const handleCreateNew = () => {
-    if (!isPro && subscriptions.length >= 3) {
+    if (!isPro && subscriptions.length >= 4) {
       onUpgradeClick();
       return;
     }
@@ -45,7 +46,7 @@ export function Dashboard({ subscriptions, addSubscription, updateSubscription, 
   return (
     <div className="flex-1 w-full mx-auto">
         <div className="max-w-7xl mx-auto p-4 md:p-10 pb-24 md:pb-10">
-          <DashboardCards subscriptions={subscriptions} />
+          <DashboardCards subscriptions={subscriptions} localCurrency={localCurrency} />
           
           <div className="flex flex-col gap-8 items-stretch mt-4">
             <div className="w-full">
@@ -66,6 +67,7 @@ export function Dashboard({ subscriptions, addSubscription, updateSubscription, 
                 onEdit={handleEdit}
                 onDelete={deleteSubscription}
                 renewalAlertDays={renewalAlertDays}
+                localCurrency={localCurrency}
               />
             </div>
 
@@ -80,6 +82,7 @@ export function Dashboard({ subscriptions, addSubscription, updateSubscription, 
         onClose={() => setIsModalOpen(false)}
         onSave={handleSave}
         editingSub={editingSub}
+        isPro={isPro}
       />
     </div>
   );

@@ -47,7 +47,7 @@ export function PricingPage({ isPro, onUpgrade }: PricingPageProps) {
               </h4>
               <p className="text-gray-400 text-sm h-10">للمحترفين والفرق الصغيرة مع ميزات متقدمة.</p>
               <div className="mt-6 flex items-baseline gap-1">
-                <span className="text-4xl font-bold text-white">$6.99</span>
+                <span className="text-4xl font-bold text-white">$4.99</span>
                 <span className="text-gray-500 text-sm">/ شهرياً</span>
               </div>
             </div>
