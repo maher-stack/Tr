@@ -16,15 +16,17 @@ import { PaymentHistory } from './pages/PaymentHistory';
 import { PremiumOverlay } from './components/PremiumOverlay';
 import { TrialExpiredOverlay } from './components/TrialExpiredOverlay';
 import { useTranslation } from './lib/LanguageContext';
+import { useTheme } from './lib/ThemeContext';
+import { Sun, Moon } from 'lucide-react';
 
 function UpgradePrompt({ onUpgrade }: { onUpgrade: () => void }) {
   const { t } = useTranslation();
   return (
     <div className="flex-1 flex flex-col items-center justify-center p-10 h-full">
-      <div className="bg-[#111111] p-8 rounded-xl border border-[#333] text-center max-w-md w-full relative overflow-hidden">
-         <h3 className="text-xl font-bold text-white mb-4 relative z-10">{t('proFeature')}</h3>
-         <p className="text-gray-400 mb-8 relative z-10">{t('proFeatureDesc')}</p>
-         <button onClick={onUpgrade} className="w-full py-3 px-4 bg-emerald-500 text-black rounded-lg font-bold hover:bg-emerald-400 transition-all relative z-10">
+      <div className="bg-white dark:bg-[#0f172a] p-8 rounded-xl border border-slate-200 dark:border-slate-800 text-center max-w-md w-full relative overflow-hidden shadow-sm">
+         <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-4 relative z-10">{t('proFeature')}</h3>
+         <p className="text-slate-500 dark:text-slate-400 mb-8 relative z-10">{t('proFeatureDesc')}</p>
+         <button onClick={onUpgrade} className="w-full py-3 px-4 bg-blue-600 hover:bg-blue-500 text-white rounded-lg font-bold transition-all relative z-10 cursor-pointer">
             {t('upgradeNow')}
          </button>
       </div>
@@ -34,6 +36,7 @@ function UpgradePrompt({ onUpgrade }: { onUpgrade: () => void }) {
 
 export default function App() {
   const { language, toggleLanguage, dir, t } = useTranslation();
+  const { theme, toggleTheme } = useTheme();
   
   const { 
     currentUser, 
@@ -102,28 +105,28 @@ export default function App() {
   };
 
   return (
-    <div className="flex flex-row h-screen w-full bg-[#090909] text-gray-200 font-sans overflow-hidden selection:bg-emerald-500/30 selection:text-emerald-100 animate-fade-in" dir={dir}>
+    <div className="flex flex-row h-screen w-full bg-[#f8fafc] dark:bg-[#0b0f19] text-slate-800 dark:text-slate-100 font-sans overflow-hidden selection:bg-blue-500/30 selection:text-blue-900 animate-fade-in" dir={dir}>
       {/* Sidebar for Desktop - Lock badges hide automatically if trial is active */}
       <div className="hidden lg:flex shrink-0">
         <Sidebar currentPage={currentPage} onPageChange={setCurrentPage} isPro={isPremiumActive} />
       </div>
 
       {/* Main Content Area */}
-      <div className="flex-1 flex flex-col min-w-0 bg-[#090909] relative h-full overflow-hidden">
+      <div className="flex-1 flex flex-col min-w-0 bg-[#f8fafc] dark:bg-[#0b0f19] relative h-full overflow-hidden">
         
         {/* Trial Banner - Beautiful high-contrast banner informing user of their trial status */}
         {isTrialActive && !isPro && (
-          <div className="bg-gradient-to-r from-emerald-950/90 via-emerald-900/90 to-[#112419]/90 border-b border-emerald-500/30 text-emerald-300 px-4 py-2.5 text-center text-xs font-bold flex flex-wrap items-center justify-center gap-2 relative z-50 animate-in slide-in-from-top duration-300 shadow-md">
-            <span className="inline-flex items-center gap-1.5 bg-emerald-500/10 border border-emerald-500/30 px-2.5 py-0.5 rounded text-[10px] text-emerald-400 font-extrabold uppercase animate-pulse">
+          <div className="bg-gradient-to-r from-blue-950/95 via-blue-900/95 to-[#111e2e]/95 border-b border-blue-500/30 text-blue-200 px-4 py-2.5 text-center text-xs font-bold flex flex-wrap items-center justify-center gap-2 relative z-50 animate-in slide-in-from-top duration-300 shadow-md">
+            <span className="inline-flex items-center gap-1.5 bg-blue-500/10 border border-blue-500/30 px-2.5 py-0.5 rounded text-[10px] text-blue-400 font-extrabold uppercase animate-pulse">
               {t('tryPro')}
             </span>
             <span className="font-medium text-gray-200">{t('trialActiveMsg')}</span>
-            <span className="text-emerald-400 font-extrabold font-sans underline decoration-emerald-500/40 mx-1">
+            <span className="text-blue-400 font-extrabold font-sans underline decoration-blue-500/40 mx-1">
               {daysLeft === 1 ? t('oneDayLeft') : daysLeft === 2 ? t('twoDaysLeft') : t('daysLeft', { days: daysLeft })}
             </span>
             <button 
               onClick={() => setCurrentPage('pricing')} 
-              className="px-3.5 py-1 bg-emerald-500 hover:bg-emerald-400 text-black font-black rounded-lg text-[10px] transition-all hover:scale-[1.03] active:scale-[0.97] shadow-sm ml-2.5"
+              className="px-3.5 py-1 bg-blue-500 hover:bg-blue-400 text-white font-black rounded-lg text-[10px] transition-all hover:scale-[1.03] active:scale-[0.97] shadow-sm ml-2.5 cursor-pointer"
             >
               {t('upgradeBtn')}
             </button>
@@ -131,28 +134,37 @@ export default function App() {
         )}
 
         {/* Header - Adjust visibility for desktop (logo hidden since sidebar has it) */}
-        <header className="h-16 flex items-center justify-between px-4 md:px-10 border-b border-[#1f1f1f] shrink-0 bg-[#090909]/90 backdrop-blur-md sticky top-0 z-40 transition-all">
+        <header className="h-16 flex items-center justify-between px-4 md:px-10 border-b border-slate-200 dark:border-slate-800 shrink-0 bg-white/90 dark:bg-[#0b0f19]/90 backdrop-blur-md sticky top-0 z-40 transition-all">
           <div className="flex items-center gap-3">
-            <span className="w-3 h-3 bg-emerald-500 rounded-sm shadow-[0_0_8px_rgba(16,185,129,0.5)]"></span>
-            <h1 className="text-xl font-bold text-white tracking-tight">
+            <span className="w-3 h-3 bg-blue-500 rounded-sm shadow-[0_0_8px_rgba(59,130,246,0.5)]"></span>
+            <h1 className="text-xl font-bold text-slate-900 dark:text-white tracking-tight">
               {t('appName')}
             </h1>
           </div>
           <div className="hidden lg:block"></div> {/* Spacer for desktop header */}
           <div className="flex items-center gap-4">
+            {/* Theme Toggle Button */}
+            <button 
+              onClick={toggleTheme}
+              className="p-2 rounded-lg border border-slate-200 dark:border-slate-800 hover:border-blue-500/30 dark:hover:border-blue-500/30 bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-300 hover:text-blue-600 dark:hover:text-blue-400 transition-all hover:scale-[1.02] active:scale-[0.98] shadow-sm cursor-pointer flex items-center justify-center"
+              title={theme === 'light' ? 'الوضع المظلم' : 'الوضع الفاتح'}
+            >
+              {theme === 'light' ? <Moon className="w-4.5 h-4.5 text-slate-700 hover:text-blue-600" /> : <Sun className="w-4.5 h-4.5 text-amber-500" />}
+            </button>
+
             {/* Language Switch Toggle with modern visual styling */}
             <button 
               onClick={toggleLanguage}
-              className="px-3 py-1.5 rounded-lg border border-[#222] hover:border-emerald-500/30 bg-[#111] hover:bg-[#151515] text-[11px] font-bold text-gray-300 hover:text-emerald-400 transition-all hover:scale-[1.02] active:scale-[0.98] flex items-center gap-1.5 shadow-sm cursor-pointer"
+              className="px-3 py-1.5 rounded-lg border border-slate-200 dark:border-slate-800 hover:border-blue-500/30 dark:hover:border-blue-500/30 bg-white dark:bg-slate-900 hover:bg-slate-50 dark:hover:bg-slate-800 text-[11px] font-bold text-slate-700 dark:text-slate-300 hover:text-blue-600 dark:hover:text-blue-400 transition-all hover:scale-[1.02] active:scale-[0.98] flex items-center gap-1.5 shadow-sm cursor-pointer"
             >
               <span className="text-[12px]">🌐</span>
               <span className="font-semibold">{language === 'en' ? 'العربية' : 'English'}</span>
             </button>
 
-            <div className="hidden sm:block text-xs text-gray-400 text-right ltr:text-left">
-              {t('greeting')} <span className="text-white font-semibold">{currentUser.name}</span>
+            <div className="hidden sm:block text-xs text-slate-500 dark:text-slate-400 text-right ltr:text-left">
+              {t('greeting')} <span className="text-slate-900 dark:text-white font-semibold">{currentUser.name}</span>
             </div>
-            <div className="w-8 h-8 rounded-full bg-[#1a1a1a] border border-[#333] flex items-center justify-center text-sm font-bold text-emerald-500 shadow-sm shadow-[#111]">
+            <div className="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 flex items-center justify-center text-sm font-bold text-blue-500 shadow-sm">
               {currentUser.name.charAt(0).toUpperCase()}
             </div>
           </div>

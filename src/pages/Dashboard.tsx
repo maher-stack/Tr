@@ -52,13 +52,13 @@ export function Dashboard({ subscriptions, addSubscription, updateSubscription, 
           
           <div className="flex flex-col gap-8 items-stretch mt-4">
             <div className="w-full">
-              <div className="mb-6 flex items-center justify-between">
-                <h3 className="text-sm font-semibold text-gray-400 flex items-center gap-2">
+              <div className="mb-6 flex items-center justify-between font-sans">
+                <h3 className="text-sm font-semibold text-slate-500 flex items-center gap-2 animate-pulse">
                   {t('sub_list_title')}
                 </h3>
                 <button
                   onClick={handleCreateNew}
-                  className="inline-flex items-center gap-2 px-3 py-2 text-xs font-bold text-black bg-white rounded-lg hover:bg-gray-200 transition-colors cursor-pointer"
+                  className="inline-flex items-center gap-2 px-3.5 py-2 text-xs font-bold text-white bg-blue-600 rounded-lg hover:bg-blue-500 transition-all cursor-pointer shadow-sm shadow-blue-200 hover:scale-[1.01]"
                 >
                   <Plus className="w-4 h-4" />
                   <span className="hidden sm:inline">{t('new_sub_btn')}</span>

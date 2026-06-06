@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Bell, Database, Shield, LogOut, Check, X, Edit2, Crown, Zap, Lock, Coins, MessageSquare, Send, Mail, Phone, ChevronDown, ExternalLink } from 'lucide-react';
+import { Bell, Database, Shield, LogOut, Check, X, Edit2, Crown, Zap, Lock, Coins, MessageSquare, Send, Mail, ChevronDown, ExternalLink } from 'lucide-react';
 import { User } from '../hooks/useAuth';
 import { Subscription, CURRENCY_LABELS } from '../types';
 
@@ -33,7 +33,6 @@ export function SettingsPage({ currentUser, onLogout, subscriptions, onUpdateUse
   const [phoneNumber, setPhoneNumber] = useState(currentUser?.phone || '');
   const [countryCode, setCountryCode] = useState(currentUser?.countryCode || '+966');
   const [showCountryDropdown, setShowCountryDropdown] = useState(false);
-  const [testSent, setTestSent] = useState(false);
   const [testMessageText, setTestMessageText] = useState('');
   const [previewOpen, setPreviewOpen] = useState(false);
 
@@ -158,9 +157,9 @@ export function SettingsPage({ currentUser, onLogout, subscriptions, onUpdateUse
         <div className="max-w-2xl mx-auto space-y-6 p-4 md:p-10 pb-24 md:pb-10">
             
             {currentUser && (
-              <div className="bg-[#111111] p-6 rounded-xl border border-[#1f1f1f]">
-                <div className="flex flex-col sm:flex-row sm:items-center gap-4 mb-6 pb-6 border-b border-[#1f1f1f]">
-                  <div className="w-16 h-16 bg-[#1a1a1a] border border-[#333] rounded-[20px] flex shrink-0 items-center justify-center text-emerald-500 font-bold text-2xl shadow-inner shadow-black/50">
+              <div className="bg-white dark:bg-[#0f172a] p-6 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm">
+                <div className="flex flex-col sm:flex-row sm:items-center gap-4 mb-6 pb-6 border-b border-slate-100 dark:border-slate-800">
+                  <div className="w-16 h-16 bg-blue-50 dark:bg-blue-950/20 border border-blue-100 dark:border-blue-900/30 rounded-[20px] flex shrink-0 items-center justify-center text-blue-600 dark:text-blue-400 font-bold text-2xl shadow-inner">
                     {currentUser.name.charAt(0).toUpperCase()}
                   </div>
                   <div className="flex-1">
@@ -170,11 +169,11 @@ export function SettingsPage({ currentUser, onLogout, subscriptions, onUpdateUse
                           type="text" 
                           value={editNameValue}
                           onChange={(e) => setEditNameValue(e.target.value)}
-                          className="bg-[#1a1a1a] text-white border border-[#333] rounded-lg px-3 py-1.5 focus:outline-none focus:border-emerald-500 text-sm"
+                          className="bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-white border border-slate-200 dark:border-slate-800 rounded-lg px-3 py-1.5 focus:outline-none focus:border-blue-500 text-sm"
                           autoFocus
                           onKeyDown={(e) => e.key === 'Enter' && handleSaveName()}
                         />
-                        <button onClick={handleSaveName} className="p-1.5 bg-emerald-500/10 text-emerald-500 rounded-lg hover:bg-emerald-500/20">
+                        <button onClick={handleSaveName} className="p-1.5 bg-blue-500/10 text-blue-600 dark:text-blue-400 rounded-lg hover:bg-blue-500/20">
                           <Check className="w-4 h-4" />
                         </button>
                         <button onClick={() => { setIsEditingName(false); setEditNameValue(currentUser.name); }} className="p-1.5 bg-gray-500/10 text-gray-400 rounded-lg hover:bg-gray-500/20">
@@ -183,26 +182,26 @@ export function SettingsPage({ currentUser, onLogout, subscriptions, onUpdateUse
                       </div>
                     ) : (
                       <div className="flex items-center gap-2 mb-1">
-                        <h3 className="text-xl font-bold text-white">{currentUser.name}</h3>
-                        <button onClick={() => setIsEditingName(true)} className="text-gray-500 hover:text-gray-300 transition-colors p-1">
+                        <h3 className="text-xl font-bold text-slate-800 dark:text-white">{currentUser.name}</h3>
+                        <button onClick={() => setIsEditingName(true)} className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition-colors p-1 cursor-pointer">
                           <Edit2 className="w-3.5 h-3.5" />
                         </button>
                       </div>
                     )}
-                    <p className="text-sm text-gray-400 mb-3">{currentUser.email}</p>
+                    <p className="text-sm text-slate-500 dark:text-slate-400 mb-3">{currentUser.email}</p>
                     
                     <div className="flex flex-wrap items-center gap-3">
-                      <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold ${currentUser.isPro ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' : 'bg-gray-500/10 text-gray-400 border border-gray-500/20'}`}>
-                        {currentUser.isPro ? <Crown className="w-3 h-3 ml-1" /> : <Zap className="w-3 h-3 ml-1" />}
+                      <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold ${currentUser.isPro ? 'bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20' : 'bg-slate-100 text-slate-500 dark:bg-slate-800 dark:text-slate-400 border border-slate-200 dark:border-slate-700'}`}>
+                        {currentUser.isPro ? <Crown className="w-3 h-3 ml-1 fill-blue-500" /> : <Zap className="w-3 h-3 ml-1" />}
                         {currentUser.isPro ? 'حساب احترافي (Pro)' : 'حساب أساسي'}
                       </span>
                       
                       <button 
                         onClick={togglePlan}
-                        className={`text-xs px-3 py-1 rounded-full font-medium transition-all ${
+                        className={`text-xs px-3 py-1 rounded-full font-bold transition-all cursor-pointer ${
                           currentUser.isPro 
-                          ? 'text-gray-400 hover:text-white bg-[#1a1a1a] hover:bg-[#222] border border-[#333]' 
-                          : 'text-emerald-500 hover:text-emerald-400 bg-emerald-500/10 hover:bg-emerald-500/20 border border-emerald-500/20'
+                          ? 'text-slate-500 hover:text-slate-700 dark:text-slate-450 dark:hover:text-white bg-slate-50 hover:bg-slate-100 dark:bg-slate-800 dark:hover:bg-slate-750 border border-slate-200 dark:border-slate-700' 
+                          : 'text-blue-600 hover:text-blue-500 dark:text-blue-400 dark:hover:text-blue-350 bg-blue-50 hover:bg-blue-100 dark:bg-blue-950/20 dark:hover:bg-blue-950/40 border border-blue-200 dark:border-blue-900/30'
                         }`}
                       >
                         {currentUser.isPro ? 'العودة للخطة الأساسية' : 'ترقية للاحترافية'}
@@ -212,7 +211,7 @@ export function SettingsPage({ currentUser, onLogout, subscriptions, onUpdateUse
                   {onLogout && (
                      <button 
                        onClick={onLogout}
-                       className="p-3 bg-red-500/5 text-red-500 rounded-xl hover:bg-red-500/10 transition-colors border border-red-500/10 sm:mt-0 mt-4 self-start sm:self-auto"
+                       className="p-3 bg-red-500/5 text-red-500 rounded-xl hover:bg-red-500/10 transition-colors border border-red-500/10 sm:mt-0 mt-4 self-start sm:self-auto cursor-pointer"
                        title="تسجيل الخروج"
                      >
                        <LogOut className="w-5 h-5" />
@@ -222,28 +221,28 @@ export function SettingsPage({ currentUser, onLogout, subscriptions, onUpdateUse
               </div>
             )}
 
-            <div className="bg-[#111111] p-6 rounded-xl border border-[#1f1f1f]">
+            <div className="bg-white dark:bg-[#0f172a] p-6 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm">
               <div className="flex items-center gap-4 mb-6">
-                <div className="w-10 h-10 rounded-xl bg-[#1a1a1a] flex items-center justify-center border border-[#2a2a2a]">
-                    <Bell className="w-5 h-5 text-gray-400" />
+                <div className="w-10 h-10 rounded-xl bg-slate-50 dark:bg-slate-900 flex items-center justify-center border border-slate-200 dark:border-slate-800">
+                    <Bell className="w-5 h-5 text-slate-500 dark:text-slate-400" />
                 </div>
                 <div>
-                   <h3 className="text-white font-medium">الإشعارات والتنبيهات المتقدمة</h3>
-                   <p className="text-xs text-gray-500 mt-1">قنوات وإعدادات التذكير بالدفع والتجديد</p>
+                   <h3 className="text-slate-805 dark:text-white font-bold text-sm">الإشعارات والتنبيهات المتقدمة</h3>
+                   <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">قنوات وإعدادات التذكير بالدفع والتجديد</p>
                 </div>
               </div>
               
-              <div className="space-y-6 pt-6 border-t border-[#1f1f1f]">
+              <div className="space-y-6 pt-6 border-t border-slate-100 dark:border-slate-800">
                  <div className="flex flex-col gap-3">
-                    <span className="text-sm font-medium text-gray-300">موعد ظهور تنبيه التجديد</span>
+                    <span className="text-xs font-bold text-slate-500 dark:text-slate-400">موعد ظهور تنبيه التجديد</span>
                     
                     {!currentUser?.isPro ? (
-                      <div className="p-3 bg-[#161616] border border-[#222] rounded-xl">
-                        <p className="text-xs text-gray-400 mb-2">الخطة المجانية تظهر التنبيهات قبل:</p>
-                        <span className="px-3 py-1 bg-amber-500/10 text-amber-500 rounded-lg text-xs font-bold border border-amber-500/20">
+                      <div className="p-3 bg-slate-50 dark:bg-slate-900/40 border border-slate-150 dark:border-slate-800/80 rounded-xl">
+                        <p className="text-xs text-slate-500 dark:text-slate-400 mb-2">الخطة المجانية تظهر التنبيهات قبل:</p>
+                        <span className="px-3 py-1 bg-amber-500/10 text-amber-600 dark:text-amber-500 rounded-lg text-xs font-bold border border-amber-500/20">
                           24 ساعة (يوم واحد فقط)
                         </span>
-                        <p className="text-[10px] text-gray-500 mt-3 flex items-center gap-1">
+                        <p className="text-[10px] text-slate-500 dark:text-slate-450 mt-3 flex items-center gap-1">
                           <Zap className="w-3 h-3 text-amber-500" />
                           الترقية تتيح اختيار أسبوع (7 أيام) أو 3 أيام حسب رغبتك 👑
                         </p>
@@ -253,10 +252,10 @@ export function SettingsPage({ currentUser, onLogout, subscriptions, onUpdateUse
                         <button 
                           type="button"
                           onClick={() => onUpdateUser?.({ renewalAlertDays: 3 })}
-                          className={`flex flex-col items-center justify-center p-3 rounded-xl border transition-all ${
+                          className={`flex flex-col items-center justify-center p-3 rounded-xl border transition-all cursor-pointer ${
                             currentUser?.renewalAlertDays === 3 
-                              ? 'bg-emerald-500/10 border-emerald-500 text-emerald-500' 
-                              : 'bg-[#161616] border-[#333] text-gray-400 hover:border-gray-600'
+                              ? 'bg-blue-500/10 border-blue-500 text-blue-600 dark:text-blue-400' 
+                              : 'bg-slate-50 dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-500 dark:text-slate-400 hover:border-slate-400'
                           }`}
                         >
                           <span className="text-lg font-bold">3</span>
@@ -265,10 +264,10 @@ export function SettingsPage({ currentUser, onLogout, subscriptions, onUpdateUse
                         <button 
                           type="button"
                           onClick={() => onUpdateUser?.({ renewalAlertDays: 7 })}
-                          className={`flex flex-col items-center justify-center p-3 rounded-xl border transition-all ${
+                          className={`flex flex-col items-center justify-center p-3 rounded-xl border transition-all cursor-pointer ${
                             currentUser?.renewalAlertDays === 7 
-                              ? 'bg-emerald-500/10 border-emerald-500 text-emerald-500' 
-                              : 'bg-[#161616] border-[#333] text-gray-400 hover:border-gray-600'
+                              ? 'bg-blue-500/10 border-blue-500 text-blue-600 dark:text-blue-400' 
+                              : 'bg-slate-50 dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-500 dark:text-slate-400 hover:border-slate-400'
                           }`}
                         >
                           <span className="text-lg font-bold">7</span>
@@ -279,41 +278,41 @@ export function SettingsPage({ currentUser, onLogout, subscriptions, onUpdateUse
                  </div>
 
                  {/* Channels Gating */}
-                 <div className="space-y-4 pt-4 border-t border-[#1a1a1a]">
-                    <span className="text-sm font-medium text-gray-300 block mb-2">قنوات استلام التنبيهات</span>
+                 <div className="space-y-4 pt-4 border-t border-slate-100 dark:border-slate-800">
+                    <span className="text-xs font-bold text-slate-500 dark:text-slate-404 block mb-2">قنوات استلام التنبيهات</span>
                     
                     {/* Email: Free & Pro */}
-                    <label className="flex items-center justify-between p-3 rounded-xl bg-[#161616]/40 border border-[#1f1f1f] cursor-pointer hover:bg-[#161616]/70 transition-colors">
+                    <label className="flex items-center justify-between p-3 rounded-xl bg-slate-50 dark:bg-slate-900/40 border border-slate-150 dark:border-slate-800/80 cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-900 transition-colors">
                       <div className="flex items-center gap-3">
-                        <Mail className="w-4 h-4 text-gray-400" />
+                        <Mail className="w-4 h-4 text-slate-400" />
                         <div>
-                          <p className="text-xs font-bold text-white">تنبيهات البريد الإلكتروني</p>
-                          <p className="text-[10px] text-gray-500 mt-0.5">تذكير تلقائي على بريدك المسجل</p>
+                          <p className="text-xs font-bold text-slate-800 dark:text-white">تنبيهات البريد الإلكتروني</p>
+                          <p className="text-[10px] text-slate-500 dark:text-slate-400 mt-0.5">تذكير تلقائي على بريدك المسجل</p>
                         </div>
                       </div>
                       <input 
                         type="checkbox" 
                         checked={currentUser?.emailEnabled !== false}
                         onChange={(e) => onUpdateUser?.({ emailEnabled: e.target.checked })}
-                        className="accent-emerald-500 w-4 h-4 cursor-pointer" 
+                        className="accent-blue-600 w-4 h-4 cursor-pointer" 
                       />
                     </label>
 
                     {/* WhatsApp: Pro only */}
                     <div className="space-y-3">
-                      <div className={`flex items-center justify-between p-3 rounded-xl bg-[#161616]/40 border border-[#1f1f1f] ${!currentUser?.isPro ? 'opacity-60' : ''}`}>
+                      <div className={`flex items-center justify-between p-3 rounded-xl bg-slate-50 dark:bg-slate-900/40 border border-slate-150 dark:border-slate-800/80 ${!currentUser?.isPro ? 'opacity-60' : ''}`}>
                         <div className="flex items-center gap-3">
                           <MessageSquare className="w-4 h-4 text-emerald-500" />
                           <div>
                             <div className="flex items-center gap-2">
-                              <p className="text-xs font-bold text-white">تنبيهات WhatsApp الاحترافية</p>
+                              <p className="text-xs font-bold text-slate-800 dark:text-white">تنبيهات WhatsApp الاحترافية</p>
                               {!currentUser?.isPro && (
-                                <span className="text-[8px] font-black bg-amber-500/10 text-amber-500 border border-amber-500/20 px-1.5 py-0.5 rounded flex items-center gap-0.5">
+                                <span className="text-[8px] font-black bg-amber-500/10 text-amber-600 dark:text-amber-500 border border-amber-500/20 px-1.5 py-0.5 rounded flex items-center gap-0.5">
                                   <Lock className="w-2 h-2" /> PRO
                                 </span>
                               )}
                             </div>
-                            <p className="text-[10px] text-gray-500 mt-0.5 font-sans">رسائل WhatsApp فورية تذكر بموعد الدفع</p>
+                            <p className="text-[10px] text-slate-500 dark:text-slate-400 mt-0.5 font-sans">رسائل WhatsApp فورية تذكر بموعد الدفع</p>
                           </div>
                         </div>
                         <input 
@@ -321,15 +320,15 @@ export function SettingsPage({ currentUser, onLogout, subscriptions, onUpdateUse
                           disabled={!currentUser?.isPro}
                           checked={currentUser?.isPro && currentUser?.whatsappEnabled === true}
                           onChange={(e) => currentUser?.isPro && onUpdateUser?.({ whatsappEnabled: e.target.checked })}
-                          className="accent-emerald-500 w-4 h-4 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed" 
+                          className="accent-blue-600 w-4 h-4 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed" 
                         />
                       </div>
 
                       {currentUser?.isPro && (
-                        <div className="p-4 bg-[#161616]/70 border border-[#1f1f1f] rounded-xl space-y-4">
-                          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1 pb-1 border-b border-[#1f1f1f]">
-                            <span className="text-xs font-bold text-gray-300">رقم جوال الواتساب النشط</span>
-                            <span className="text-[10px] text-gray-500 font-mono">آخر حفظ: {currentUser?.phone || 'لا يوجد'}</span>
+                        <div className="p-4 bg-slate-50 dark:bg-slate-900 border border-slate-150 dark:border-slate-800/80 rounded-xl space-y-4">
+                          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1 pb-1 border-b border-slate-100 dark:border-slate-800">
+                            <span className="text-xs font-bold text-slate-750 dark:text-slate-300">رقم جوال الواتساب النشط</span>
+                            <span className="text-[10px] text-slate-450 font-mono">آخر حفظ: {currentUser?.phone || 'لا يوجد'}</span>
                           </div>
 
                           <div className="flex items-center gap-2">
@@ -338,17 +337,17 @@ export function SettingsPage({ currentUser, onLogout, subscriptions, onUpdateUse
                               <button
                                 type="button"
                                 onClick={() => setShowCountryDropdown(!showCountryDropdown)}
-                                className="flex items-center gap-1.5 px-3 py-2.5 bg-[#1c1c1c] border border-[#2c2c2c] rounded-xl text-white hover:bg-[#252525] transition-all text-xs"
+                                className="flex items-center gap-1.5 px-3 py-2.5 bg-white dark:bg-[#0b0f19] border border-slate-200 dark:border-slate-750 rounded-xl text-slate-800 dark:text-white hover:bg-slate-50 dark:hover:bg-slate-850 transition-all text-xs cursor-pointer shadow-sm"
                               >
                                 <span>{COUNTRIES.find(c => c.code === countryCode)?.flag || '🇸🇦'}</span>
-                                <span className="font-mono text-gray-300">{countryCode}</span>
-                                <ChevronDown className="w-3.5 h-3.5 text-gray-500" />
+                                <span className="font-mono text-slate-500 dark:text-slate-405">{countryCode}</span>
+                                <ChevronDown className="w-3.5 h-3.5 text-slate-400" />
                               </button>
 
                               {showCountryDropdown && (
                                 <>
                                   <div className="fixed inset-0 z-45" onClick={() => setShowCountryDropdown(false)}></div>
-                                  <div className="absolute right-0 top-full mt-2 w-52 max-h-48 overflow-y-auto bg-[#1a1a1a] border border-[#333] rounded-xl shadow-2xl z-50 py-1">
+                                  <div className="absolute right-0 top-full mt-2 w-52 max-h-48 overflow-y-auto bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl shadow-2xl z-50 py-1 text-right">
                                     {COUNTRIES.map((country) => (
                                       <button
                                         key={country.code}
@@ -357,13 +356,13 @@ export function SettingsPage({ currentUser, onLogout, subscriptions, onUpdateUse
                                           setCountryCode(country.code);
                                           setShowCountryDropdown(false);
                                         }}
-                                        className="w-full text-right px-4 py-2 hover:bg-[#222] transition-colors flex items-center justify-between text-xs text-gray-300 font-sans"
+                                        className="w-full text-right px-4 py-2 hover:bg-slate-50 dark:hover:bg-slate-750 transition-colors flex items-center justify-between text-xs text-slate-700 dark:text-slate-200"
                                       >
                                         <span className="flex items-center gap-1.5">
                                           <span>{country.flag}</span>
                                           <span>{country.name}</span>
                                         </span>
-                                        <span className="font-mono text-[10px] text-gray-500">{country.code}</span>
+                                        <span className="font-mono text-[10px] text-slate-400">{country.code}</span>
                                       </button>
                                     ))}
                                   </div>
@@ -377,7 +376,7 @@ export function SettingsPage({ currentUser, onLogout, subscriptions, onUpdateUse
                               value={phoneNumber}
                               onChange={(e) => setPhoneNumber(e.target.value.replace(/[^0-9]/g, ''))}
                               placeholder="500000000"
-                              className="flex-1 bg-[#1c1c1c] border border-[#2c2c2c] rounded-xl px-4 py-2.5 text-xs font-mono text-white focus:outline-none focus:ring-1 focus:ring-emerald-500 text-left"
+                              className="flex-1 bg-white dark:bg-[#0b0f19] border border-slate-200 dark:border-slate-755 rounded-xl px-4 py-2.5 text-xs font-mono text-slate-800 dark:text-white focus:outline-none focus:ring-1 focus:ring-blue-500 text-left"
                               dir="ltr"
                             />
                             
@@ -390,10 +389,10 @@ export function SettingsPage({ currentUser, onLogout, subscriptions, onUpdateUse
                                     countryCode,
                                     whatsappEnabled: !!phoneNumber 
                                   });
-                                  alert("✅ تم ذكاء حفظ رقم الجوال وتأكيد جاهزية تنبيهات الواتساب بنجاح!");
+                                  alert("✅ تم حفظ رقم الجوال وتأكيد جاهزية تنبيهات الواتساب بنجاح!");
                                 }
                               }}
-                              className="px-4 py-2.5 bg-emerald-500 text-black font-bold text-xs rounded-xl hover:bg-emerald-400 active:scale-95 transition-all shrink-0"
+                              className="px-4 py-2.5 bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs rounded-xl active:scale-95 transition-all shrink-0 cursor-pointer"
                             >
                               حفظ
                             </button>
@@ -404,7 +403,7 @@ export function SettingsPage({ currentUser, onLogout, subscriptions, onUpdateUse
                             <button
                               type="button"
                               onClick={handleTestWhatsApp}
-                              className="text-[11px] font-bold text-emerald-400 hover:text-emerald-300 transition-colors flex items-center gap-1"
+                              className="text-[11px] font-bold text-emerald-650 dark:text-emerald-400 hover:text-emerald-500 transition-colors flex items-center gap-1 cursor-pointer"
                             >
                               <MessageSquare className="w-3.5 h-3.5 text-emerald-500" />
                               تفقد ومعاينة شكل رسالة التنبيه التلقائية 💬
@@ -413,19 +412,19 @@ export function SettingsPage({ currentUser, onLogout, subscriptions, onUpdateUse
 
                           {/* Interactive WhatsApp preview */}
                           {previewOpen && (
-                            <div className="bg-[#0b141a] border border-[#1b2a24] rounded-xl overflow-hidden p-4 space-y-3 relative text-right">
-                              <div className="flex items-center justify-between border-b border-[#1b2a24] pb-2 text-[10px] text-emerald-500 font-bold">
+                            <div className="bg-[#f0f2f5] dark:bg-[#0b141a] border border-slate-200 dark:border-[#1b2a24] rounded-xl overflow-hidden p-4 space-y-3 relative text-right shadow-inner">
+                              <div className="flex items-center justify-between border-b border-slate-200 dark:border-[#1b2a24] pb-2 text-[10px] text-emerald-600 dark:text-emerald-500 font-bold">
                                 <span className="flex items-center gap-1.5">
-                                  <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                                  <span className="w-2 h-2 rounded-full bg-emerald-555 animate-pulse"></span>
                                   📱 نموذج إشعار Site Tracko التلقائي
                                 </span>
-                                <button type="button" onClick={() => setPreviewOpen(false)} className="text-gray-500 hover:text-white pb-1 font-mono text-xs">✕</button>
+                                <button type="button" onClick={() => setPreviewOpen(false)} className="text-slate-450 hover:text-slate-800 dark:hover:text-white pb-1 font-mono text-xs cursor-pointer">✕</button>
                               </div>
                               
                               {/* Chat bubble body */}
-                              <div className="bg-[#202c33] rounded-2xl rounded-tr-none px-3.5 py-3 text-white text-xs max-w-[95%] font-sans leading-relaxed relative border-r-4 border-emerald-500">
-                                <p className="whitespace-pre-line text-[11px] text-gray-200">{testMessageText}</p>
-                                <div className="text-[9px] text-[#8696a0] text-left mt-1.5 font-mono">الآن ✓✓</div>
+                              <div className="bg-white dark:bg-[#202c33] rounded-2xl rounded-tr-none px-3.5 py-3 text-slate-800 dark:text-white text-xs max-w-[95%] font-sans leading-relaxed relative border-r-4 border-emerald-500 shadow-sm">
+                                <p className="whitespace-pre-line text-[11px] text-slate-700 dark:text-slate-100">{testMessageText}</p>
+                                <div className="text-[9px] text-slate-400 dark:text-[#8696a0] text-left mt-1.5 font-mono">الآن ✓✓</div>
                               </div>
 
                               <div className="pt-1 flex flex-col gap-2">
@@ -433,12 +432,12 @@ export function SettingsPage({ currentUser, onLogout, subscriptions, onUpdateUse
                                   href={`https://wa.me/${countryCode.replace('+', '')}${phoneNumber.replace(/^0+/, '')}?text=${encodeURIComponent(testMessageText)}`}
                                   target="_blank"
                                   rel="noopener noreferrer"
-                                  className="w-full py-2.5 bg-[#25d366] text-black font-extrabold text-xs rounded-lg hover:bg-[#20ba5a] transition-all flex items-center justify-center gap-1.5 shadow-md shadow-[#25d366]/5"
+                                  className="w-full py-2.5 bg-[#25d366] text-white dark:text-black font-extrabold text-xs rounded-lg hover:bg-[#20ba5a] transition-all flex items-center justify-center gap-1.5 shadow-md shadow-[#25d366]/5"
                                 >
                                   <ExternalLink className="w-3.5 h-3.5" />
                                   فتح تطبيق واتساب لإرسال الإشعار وتجربته فورياً 🚀
                                 </a>
-                                <p className="text-[10px] text-gray-500 text-center leading-relaxed">عند الضغط، سيقوم النظام بتمرير قالب التذكير التفاعلي بالبيانات الحقيقية إلى تطبيق واتساب مباشرة.</p>
+                                <p className="text-[10px] text-slate-500 dark:text-slate-400 text-center leading-relaxed font-semibold">عند الضغط، سيقوم النظام بتمرير قالب التذكير التفاعلي بالبيانات الحقيقية إلى تطبيق واتساب مباشرة.</p>
                               </div>
                             </div>
                           )}
@@ -447,19 +446,19 @@ export function SettingsPage({ currentUser, onLogout, subscriptions, onUpdateUse
                     </div>
 
                     {/* Telegram: Pro only */}
-                    <div className={`flex items-center justify-between p-3 rounded-xl bg-[#161616]/40 border border-[#1f1f1f] ${!currentUser?.isPro ? 'opacity-60' : ''}`}>
+                    <div className={`flex items-center justify-between p-3 rounded-xl bg-slate-50 dark:bg-slate-900/40 border border-slate-150 dark:border-slate-800/80 ${!currentUser?.isPro ? 'opacity-60' : ''}`}>
                       <div className="flex items-center gap-3">
-                        <Send className="w-4 h-4 text-blue-400" />
+                        <Send className="w-4 h-4 text-blue-500" />
                         <div>
                           <div className="flex items-center gap-2">
-                            <p className="text-xs font-bold text-white">تنبيهات Telegram الفورية</p>
+                            <p className="text-xs font-bold text-slate-850 dark:text-white">تنبيهات Telegram الفورية</p>
                             {!currentUser?.isPro && (
-                              <span className="text-[8px] font-black bg-amber-500/10 text-amber-500 border border-amber-500/20 px-1.5 py-0.5 rounded flex items-center gap-0.5">
+                              <span className="text-[8px] font-black bg-amber-500/10 text-amber-600 dark:text-amber-500 border border-amber-500/20 px-1.5 py-0.5 rounded flex items-center gap-0.5">
                                 <Lock className="w-2 h-2" /> PRO
                               </span>
                             )}
                           </div>
-                          <p className="text-[10px] text-gray-500 mt-0.5">إشعار تذكير فوري مجدول على بوت التلغرام الخاص بك</p>
+                          <p className="text-[10px] text-slate-500 dark:text-slate-400 mt-0.5">إشعار تذكير فوري مجدول على بوت التلغرام الخاص بك</p>
                         </div>
                       </div>
                       <input 
@@ -467,7 +466,7 @@ export function SettingsPage({ currentUser, onLogout, subscriptions, onUpdateUse
                         disabled={!currentUser?.isPro}
                         checked={currentUser?.isPro && currentUser?.telegramEnabled === true}
                         onChange={(e) => currentUser?.isPro && onUpdateUser?.({ telegramEnabled: e.target.checked })}
-                        className="accent-emerald-500 w-4 h-4 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed" 
+                        className="accent-blue-600 w-4 h-4 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed" 
                       />
                     </div>
                  </div>
@@ -475,26 +474,26 @@ export function SettingsPage({ currentUser, onLogout, subscriptions, onUpdateUse
             </div>
 
             {/* Local Currency Preferences Block */}
-            <div className="bg-[#111111] p-6 rounded-xl border border-[#1f1f1f]">
+            <div className="bg-white dark:bg-[#0f172a] p-6 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm">
               <div className="flex items-center gap-4 mb-6">
-                <div className="w-10 h-10 rounded-xl bg-[#1a1a1a] flex items-center justify-center border border-[#2a2a2a]">
-                    <Coins className="w-5 h-5 text-gray-400" />
+                <div className="w-10 h-10 rounded-xl bg-slate-50 dark:bg-slate-900 flex items-center justify-center border border-slate-200 dark:border-slate-800">
+                    <Coins className="w-5 h-5 text-slate-505 dark:text-slate-400" />
                 </div>
                 <div>
-                   <h3 className="text-white font-medium">العملة المحلية الموحدة</h3>
-                   <p className="text-xs text-gray-500 mt-1">عرض جميع تقارير وإحصائيات لوحة التحكم بعملتك المفضلة</p>
+                   <h3 className="text-slate-805 dark:text-white font-bold text-sm">العملة المحلية الموحدة</h3>
+                   <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">عرض جميع تقارير وإحصائيات لوحة التحكم بعملتك المفضلة</p>
                 </div>
               </div>
               
-              <div className="pt-6 border-t border-[#1f1f1f]">
-                 <label className="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-3">حدد عملة الواجهة والتحاليل الرئيسية</label>
+              <div className="pt-6 border-t border-slate-100 dark:border-slate-800">
+                 <label className="block text-xs font-bold text-slate-500 dark:text-slate-404 uppercase tracking-widest mb-3">حدد عملة الواجهة والتحاليل الرئيسية</label>
                  <select
                    value={currentUser?.localCurrency || 'USD'}
                    onChange={(e) => onUpdateUser?.({ localCurrency: e.target.value })}
-                   className="w-full px-4 py-3 bg-[#161616] border border-[#333] rounded-xl focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-all text-white text-xs cursor-pointer font-bold"
+                   className="w-full px-4 py-3 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl focus:ring-1 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all text-slate-800 dark:text-white text-xs cursor-pointer font-bold shadow-sm"
                  >
                    {Object.entries(CURRENCY_LABELS).map(([code, label]) => (
-                     <option key={code} value={code}>
+                     <option key={code} value={code} className="bg-white dark:bg-slate-900 text-slate-800" >
                        {label}
                      </option>
                    ))}
@@ -502,28 +501,28 @@ export function SettingsPage({ currentUser, onLogout, subscriptions, onUpdateUse
               </div>
             </div>
 
-            <div className="bg-[#111111] p-6 rounded-xl border border-[#1f1f1f]">
+            <div className="bg-white dark:bg-[#0f172a] p-6 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm">
               <div className="flex items-center gap-4 mb-6">
-                <div className="w-10 h-10 rounded-xl bg-[#1a1a1a] flex items-center justify-center border border-[#2a2a2a]">
-                    <Database className="w-5 h-5 text-gray-400" />
+                <div className="w-10 h-10 rounded-xl bg-slate-50 dark:bg-slate-900 flex items-center justify-center border border-slate-200 dark:border-slate-800">
+                    <Database className="w-5 h-5 text-slate-505 dark:text-slate-400" />
                 </div>
                 <div>
-                   <h3 className="text-white font-medium">البيانات وتصدير التقارير</h3>
-                   <p className="text-xs text-gray-500 mt-1">التحكم في بياناتك وتحميلها أو حذفها بالكامل</p>
+                   <h3 className="text-slate-805 dark:text-white font-bold text-sm">البيانات وتصدير التقارير</h3>
+                   <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">التحكم في بياناتك وتحميلها أو حذفها بالكامل</p>
                 </div>
               </div>
               
-              <div className="flex flex-wrap gap-3 pt-6 border-t border-[#1f1f1f]">
+              <div className="flex flex-wrap gap-3 pt-6 border-t border-slate-100 dark:border-slate-800">
                  <button 
                    onClick={handleExportCSV} 
-                   className="inline-flex items-center gap-2 px-5 py-2.5 bg-[#1a1a1a] text-white text-xs font-bold rounded-xl border border-[#333] hover:bg-[#222] hover:border-gray-600 transition-all cursor-pointer"
+                   className="inline-flex items-center gap-2 px-5 py-2.5 bg-slate-50 hover:bg-slate-100 dark:bg-slate-800 dark:hover:bg-slate-750 text-slate-700 dark:text-white text-xs font-bold rounded-xl border border-slate-200 dark:border-slate-700 transition-all cursor-pointer shadow-sm"
                  >
                     {!currentUser?.isPro && <Lock className="w-3.5 h-3.5 text-amber-500 shrink-0" />}
                     <span>تصدير إلى CSV</span>
                  </button>
                  <button 
                    onClick={handleExportJSON} 
-                   className="inline-flex items-center gap-2 px-5 py-2.5 bg-[#1a1a1a] text-white text-xs font-bold rounded-xl border border-[#333] hover:bg-[#222] hover:border-gray-600 transition-all cursor-pointer"
+                   className="inline-flex items-center gap-2 px-5 py-2.5 bg-slate-50 hover:bg-slate-100 dark:bg-slate-800 dark:hover:bg-slate-750 text-slate-700 dark:text-white text-xs font-bold rounded-xl border border-slate-200 dark:border-slate-700 transition-all cursor-pointer shadow-sm"
                  >
                     {!currentUser?.isPro && <Lock className="w-3.5 h-3.5 text-amber-500 shrink-0" />}
                     <span>تصدير إلى JSON</span>
@@ -536,14 +535,14 @@ export function SettingsPage({ currentUser, onLogout, subscriptions, onUpdateUse
                        window.location.reload();
                      }
                    }}
-                   className="px-5 py-2.5 bg-red-500/5 text-red-400 text-xs font-bold rounded-xl border border-red-500/10 hover:bg-red-500/10 transition-all cursor-pointer mr-auto"
+                   className="px-5 py-2.5 bg-red-500/10 hover:bg-red-500/20 text-red-600 dark:text-red-400 text-xs font-bold rounded-xl border border-red-500/10 transition-all cursor-pointer mr-auto shadow-sm"
                  >
                     مسح ومحو كل الاشتراكات
                  </button>
               </div>
             </div>
 
-        </div>
-    </div>
+         </div>
+     </div>
   );
 }
