@@ -15,15 +15,17 @@ import { TeamWorkspace } from './pages/TeamWorkspace';
 import { PaymentHistory } from './pages/PaymentHistory';
 import { PremiumOverlay } from './components/PremiumOverlay';
 import { TrialExpiredOverlay } from './components/TrialExpiredOverlay';
+import { useTranslation } from './lib/LanguageContext';
 
 function UpgradePrompt({ onUpgrade }: { onUpgrade: () => void }) {
+  const { t } = useTranslation();
   return (
     <div className="flex-1 flex flex-col items-center justify-center p-10 h-full">
       <div className="bg-[#111111] p-8 rounded-xl border border-[#333] text-center max-w-md w-full relative overflow-hidden">
-         <h3 className="text-xl font-bold text-white mb-4 relative z-10">ميزة للمحترفين</h3>
-         <p className="text-gray-400 mb-8 relative z-10">هذه الميزة متاحة فقط في النسخة الاحترافية. قم بالترقية الآن لاستخدامها.</p>
+         <h3 className="text-xl font-bold text-white mb-4 relative z-10">{t('proFeature')}</h3>
+         <p className="text-gray-400 mb-8 relative z-10">{t('proFeatureDesc')}</p>
          <button onClick={onUpgrade} className="w-full py-3 px-4 bg-emerald-500 text-black rounded-lg font-bold hover:bg-emerald-400 transition-all relative z-10">
-            الترقية الآن
+            {t('upgradeNow')}
          </button>
       </div>
     </div>
@@ -31,6 +33,8 @@ function UpgradePrompt({ onUpgrade }: { onUpgrade: () => void }) {
 }
 
 export default function App() {
+  const { language, toggleLanguage, dir, t } = useTranslation();
+  
   const { 
     currentUser, 
     login, 
@@ -82,7 +86,7 @@ export default function App() {
       return (
         <TrialExpiredOverlay 
           onUpgrade={() => setCurrentPage('pricing')} 
-          title={`انتهت فترتك التجريبية للوصول إلى (${title}) ⏳`}
+          title={t('premium_trial_expired_title', { title })}
         />
       );
     }
@@ -98,7 +102,7 @@ export default function App() {
   };
 
   return (
-    <div className="flex flex-row h-screen w-full bg-[#090909] text-gray-200 font-sans overflow-hidden selection:bg-emerald-500/30 selection:text-emerald-100" dir="rtl">
+    <div className="flex flex-row h-screen w-full bg-[#090909] text-gray-200 font-sans overflow-hidden selection:bg-emerald-500/30 selection:text-emerald-100 animate-fade-in" dir={dir}>
       {/* Sidebar for Desktop - Lock badges hide automatically if trial is active */}
       <div className="hidden lg:flex shrink-0">
         <Sidebar currentPage={currentPage} onPageChange={setCurrentPage} isPro={isPremiumActive} />
@@ -110,18 +114,18 @@ export default function App() {
         {/* Trial Banner - Beautiful high-contrast banner informing user of their trial status */}
         {isTrialActive && !isPro && (
           <div className="bg-gradient-to-r from-emerald-950/90 via-emerald-900/90 to-[#112419]/90 border-b border-emerald-500/30 text-emerald-300 px-4 py-2.5 text-center text-xs font-bold flex flex-wrap items-center justify-center gap-2 relative z-50 animate-in slide-in-from-top duration-300 shadow-md">
-            <span className="inline-flex items-center gap-1.5 bg-emerald-500/10 border border-emerald-500/30 px-2 py-0.5 rounded text-[10px] text-emerald-400 font-extrabold uppercase animate-pulse">
-              الفترة التجريبية مجاناً ⚡
+            <span className="inline-flex items-center gap-1.5 bg-emerald-500/10 border border-emerald-500/30 px-2.5 py-0.5 rounded text-[10px] text-emerald-400 font-extrabold uppercase animate-pulse">
+              {t('tryPro')}
             </span>
-            <span className="font-medium text-gray-200">أنت تستمتع بالوصول الاحترافي الكامل مجاناً.. متبقي لك:</span>
-            <span className="text-emerald-400 font-extrabold font-sans underline decoration-emerald-500/40">
-              {daysLeft === 1 ? 'يوم واحد فقط' : daysLeft === 2 ? 'يومان متبقيان' : `${daysLeft} أيام متبقية`} للترقية
+            <span className="font-medium text-gray-200">{t('trialActiveMsg')}</span>
+            <span className="text-emerald-400 font-extrabold font-sans underline decoration-emerald-500/40 mx-1">
+              {daysLeft === 1 ? t('oneDayLeft') : daysLeft === 2 ? t('twoDaysLeft') : t('daysLeft', { days: daysLeft })}
             </span>
             <button 
               onClick={() => setCurrentPage('pricing')} 
               className="px-3.5 py-1 bg-emerald-500 hover:bg-emerald-400 text-black font-black rounded-lg text-[10px] transition-all hover:scale-[1.03] active:scale-[0.97] shadow-sm ml-2.5"
             >
-              الترقية إلى النسخ الاحترافية 👑
+              {t('upgradeBtn')}
             </button>
           </div>
         )}
@@ -129,15 +133,24 @@ export default function App() {
         {/* Header - Adjust visibility for desktop (logo hidden since sidebar has it) */}
         <header className="h-16 flex items-center justify-between px-4 md:px-10 border-b border-[#1f1f1f] shrink-0 bg-[#090909]/90 backdrop-blur-md sticky top-0 z-40 transition-all">
           <div className="flex items-center gap-3">
-            <span className="w-3 h-3 bg-emerald-500 rounded-sm"></span>
+            <span className="w-3 h-3 bg-emerald-500 rounded-sm shadow-[0_0_8px_rgba(16,185,129,0.5)]"></span>
             <h1 className="text-xl font-bold text-white tracking-tight">
-              Site Tracko
+              {t('appName')}
             </h1>
           </div>
           <div className="hidden lg:block"></div> {/* Spacer for desktop header */}
-          <div className="flex items-center gap-3">
-            <div className="hidden sm:block text-sm text-gray-400 text-right">
-              مرحباً، <span className="text-white font-semibold">{currentUser.name}</span>
+          <div className="flex items-center gap-4">
+            {/* Language Switch Toggle with modern visual styling */}
+            <button 
+              onClick={toggleLanguage}
+              className="px-3 py-1.5 rounded-lg border border-[#222] hover:border-emerald-500/30 bg-[#111] hover:bg-[#151515] text-[11px] font-bold text-gray-300 hover:text-emerald-400 transition-all hover:scale-[1.02] active:scale-[0.98] flex items-center gap-1.5 shadow-sm cursor-pointer"
+            >
+              <span className="text-[12px]">🌐</span>
+              <span className="font-semibold">{language === 'en' ? 'العربية' : 'English'}</span>
+            </button>
+
+            <div className="hidden sm:block text-xs text-gray-400 text-right ltr:text-left">
+              {t('greeting')} <span className="text-white font-semibold">{currentUser.name}</span>
             </div>
             <div className="w-8 h-8 rounded-full bg-[#1a1a1a] border border-[#333] flex items-center justify-center text-sm font-bold text-emerald-500 shadow-sm shadow-[#111]">
               {currentUser.name.charAt(0).toUpperCase()}
@@ -162,52 +175,52 @@ export default function App() {
 
           {currentPage === 'analytics' && renderPremiumPage(
             'analytics',
-            "مستشار التحليلات المالية الذكي",
-            "احصل على تقارير تفصيلية شاملة وتوقعات إنفاقك للستة أشهر القادمة مضافاً إليها نصائح توفير مخصصة ومكيفة لخلفية اشتراكاتك النشطة للحد من استهلاك ميزانيتك الرقمية.",
+            t('analytics_title'),
+            t('analytics_desc'),
             [
-              "تقارير تفاعلية مصنفة حسب فئات الإنفاق والتشغيل والأقسام",
-              "توقعات الصرف الاستباقية للخطط الشهرية والسنوية لستة أشهر قادمة",
-              "مستشار التوفير الذكي بالتحليلات اللحظية للحد من الأعباء المادية عشوائياً",
-              "تحويل تلقائي متعدد العملات مدمج مع أسعار الصرف العالمية لجميع اشتراكاتك"
+              language === 'ar' ? "تقارير تفاعلية مصنفة حسب فئات الإنفاق والتشغيل والأقسام" : "Interactive reports grouped by spending categories and departments",
+              language === 'ar' ? "توقعات الصرف الاستباقية للخطط الشهرية والسنوية لستة أشهر قادمة" : "Proactive monthly & annual breakdown forecasting for the next 6 months",
+              language === 'ar' ? "مستشار التوفير الذكي بالتحليلات اللحظية للحد من الأعباء المادية عشوائياً" : "Smart advisor containing saving suggestions to optimize digital expenses",
+              language === 'ar' ? "تحويل تلقائي متعدد العملات مدمج مع أسعار الصرف العالمية لجميع اشتراكاتك" : "Global exchange-rate conversion integrated to compute all metrics"
             ],
             <FinancialAnalytics subscriptions={subscriptions} localCurrency={currentUser.localCurrency || 'USD'} />
           )}
 
           {currentPage === 'team' && renderPremiumPage(
             'team',
-            "مساحة عمل وتنسيق الفريق",
-            "قم بدعوة أعضاء فريقك المالي، أو شركائك، أو أفراد عائلتك للتعاون وإدارة خدمات الاشتراك المتنوعة معاً بلحظتها وسلاسة وأمان تام.",
+            t('team_title'),
+            t('team_desc'),
             [
-              "دعوة وإضافة أعضاء لمساحة العمل المشتركة للشركة أو العائلة",
-              "تخصيص وتعديل الصلاحيات المتقدمة للأعضاء (مدير Admin لقاء مشاهد Viewer)",
-              "مزامنة سحابية تفاعلية سريعة تضمن دقة الاطلاع للجميع في نفس الوقت",
-              "مراقبة النفقات الجماعية وتفعيل الشفافية لتقليل التكرار والفواتير المهملة"
+              language === 'ar' ? "دعوة وإضافة أعضاء لمساحة العمل المشتركة للشركة أو العائلة" : "Invite teammates, managers or family members to a shared space cleanly",
+              language === 'ar' ? "تخصيص وتعديل الصلاحيات المتقدمة للأعضاء (مدير Admin لقاء مشاهد Viewer)" : "Granular privilege management controls (Admin vs. Read-Only Viewer rights)",
+              language === 'ar' ? "مزامنة سحابية تفاعلية سريعة تضمن دقة الاطلاع للجميع في نفس الوقت" : "Database synchronization for real-time collaboration",
+              language === 'ar' ? "مراقبة النفقات الجماعية وتفعيل الشفافية لتقليل التكرار والفواتير المهملة" : "Aggregate group budget tracking to identify costly redundant plans"
             ],
             <TeamWorkspace />
           )}
 
           {currentPage === 'history' && renderPremiumPage(
             'history',
-            "سجل الحركات المالية والمدفوعات الشامل",
-            "استعرض كشوف المدفوعات التاريخية وتتبع فواتير ودورات اشتراكاتك المنصرمة عبر أرشيف زمني متكامل ومنظم بدقة.",
+            t('history_title'),
+            t('history_desc'),
             [
-              "كشوف دورية تفصيلية لتتبع المبالغ التي دفعت مسبقاً لكل اشتراك",
-              "توليد مستندات وأرقام تتبع فواتير افتراضية لكل معاملة كمرجع تاريخي",
-              "منظومة بحث وفرز متقدم وسريع بحسب الاسم أو الفئة أو التاريخ",
-              "حساب السعر بالعملة المحلية الموحدة الملائم لوقت العملية تلقائياً"
+              language === 'ar' ? "كشوف دورية تفصيلية لتتبع المبالغ التي دفعت مسبقاً لكل اشتراك" : "Detailed past billing ledger showing exact previous payout records per service",
+              language === 'ar' ? "توليد مستندات وأرقام تتبع فواتير افتراضية لكل معاملة كمرجع تاريخي" : "Automated virtual transaction key generation for record audits and log books",
+              language === 'ar' ? "منظومة بحث وفرز متقدم وسريع بحسب الاسم أو الفئة أو التاريخ" : "Advanced search filtering by name, cycle or category",
+              language === 'ar' ? "حساب السعر بالعملة المحلية الموحدة الملائم لوقت العملية تلقائياً" : "Auto computations of currency conversion matching precise payment timestamps"
             ],
             <PaymentHistory subscriptions={subscriptions} localCurrency={currentUser.localCurrency || 'USD'} />
           )}
 
           {currentPage === 'investment' && renderPremiumPage(
             'investment',
-            "حاسبة الاستثمارات الذكية",
-            "خطط لمستقبلك المالي عبر حاسبة الفوائد التراكمية، تتبع المحافظ والأسهم ونسب النمو المتوقعة لمشاريعك الاستثمارية.",
+            t('invest_title'),
+            t('invest_desc'),
             [
-              "حساب العوائد التراكمية المركبة لمدد زمنية طويلة وقصيرة",
-              "محاكاة سيناريوهات السوق المتعددة لتوقعات الأرباح الممكنة",
-              "مقارنة نسب نمو الاستثمار بمعدلات التضخم تلقائياً",
-              "تصدير الرسوم البيانية الاستثمارية لمشاركتها مع مستشار مالي"
+              language === 'ar' ? "حساب العوائد التراكمية المركبة لمدد زمنية طويلة وقصيرة" : "Compound growth modeling with variable timeframes",
+              language === 'ar' ? "محاكاة سيناريوهات السوق المتعددة لتوقعات الأرباح الممكنة" : "Simulate market yield outcomes based on historic averages",
+              language === 'ar' ? "مقارنة نسب نمو الاستثمار بمعدلات التضخم تلقائياً" : "Compare localized inflation rates to portfolio yield curves automatically",
+              language === 'ar' ? "تصدير الرسوم البيانية الاستثمارية لمشاركتها مع مستشار مالي" : "Export geometric growth vectors to share with accredited professionals"
             ],
             <InvestmentPage />
           )}
@@ -216,13 +229,13 @@ export default function App() {
 
           {currentPage === 'currency' && renderPremiumPage(
             'currency',
-            "أداة تحويل العملات",
-            "أداة تحليلات ومحاكاة التحويل اللحظي لحساب فوارق فروق أسعار العملات العالمية لحظياً بضغطة زر واحدة.",
+            t('currency_title'),
+            t('currency_desc'),
             [
-              "مؤشر حي لأسعار الصرف الأكثر استخداماً عالمياً ومحلياً",
-              "حساب مباشر وسريع للتحويلات المركبة لعدة عملات وتثقيلها",
-              "خزن تفضيلات العملات المفضلة لسهولة الاستخدام اللاحقة",
-              "عرض متكامل لترند أداء العملات خلال فترات تاريخية"
+              language === 'ar' ? "مؤشر حي لأسعار الصرف الأكثر استخداماً عالمياً ومحلياً" : "Live indicators of standard exchange rates worldwide",
+              language === 'ar' ? "حساب مباشر وسريع للتحويلات المركبة لعدة عملات وتثقيلها" : "Direct conversions for multiple currencies simultaneously",
+              language === 'ar' ? "خزن تفضيلات العملات المفضلة لسهولة الاستخدام اللاحقة" : "Secure localized preferences memory for quick loading",
+              language === 'ar' ? "عرض متكامل لترند أداء العملات خلال فترات تاريخية" : "Historical trajectory lines demonstrating global coin values"
             ],
             <CurrencyConverterPage />
           )}

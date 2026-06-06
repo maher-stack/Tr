@@ -1,5 +1,6 @@
 import React from 'react';
 import { LayoutDashboard, Calculator, Settings, CreditCard, TrendingUp, Coins, Lock, LineChart, Users, History } from 'lucide-react';
+import { useTranslation } from '../lib/LanguageContext';
 
 export type PageId = 'dashboard' | 'analytics' | 'team' | 'history' | 'investment' | 'math' | 'currency' | 'pricing' | 'settings';
 
@@ -10,23 +11,26 @@ interface FloatingNavProps {
 }
 
 export function FloatingNav({ currentPage, onPageChange, isPro }: FloatingNavProps) {
-  const navItems: Array<{ id: PageId; icon: any; label: string; pro?: boolean }> = [
-    { id: 'dashboard', icon: LayoutDashboard, label: 'الرئيسية' },
-    { id: 'analytics', icon: LineChart, label: 'التحليل', pro: true },
-    { id: 'team', icon: Users, label: 'الفريق', pro: true },
-    { id: 'history', icon: History, label: 'السجل', pro: true },
-    { id: 'investment', icon: TrendingUp, label: 'استثمارات', pro: true },
-    { id: 'math', icon: Calculator, label: 'الحاسبة', pro: false },
-    { id: 'currency', icon: Coins, label: 'عملات', pro: true },
-    { id: 'pricing', icon: CreditCard, label: 'الخطط' },
-    { id: 'settings', icon: Settings, label: 'إعدادات' },
+  const { t, dir } = useTranslation();
+
+  const navItems: Array<{ id: PageId; icon: any; pro?: boolean }> = [
+    { id: 'dashboard', icon: LayoutDashboard },
+    { id: 'analytics', icon: LineChart, pro: true },
+    { id: 'team', icon: Users, pro: true },
+    { id: 'history', icon: History, pro: true },
+    { id: 'investment', icon: TrendingUp, pro: true },
+    { id: 'math', icon: Calculator, pro: false },
+    { id: 'currency', icon: Coins, pro: true },
+    { id: 'pricing', icon: CreditCard },
+    { id: 'settings', icon: Settings },
   ];
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 w-full z-50 border-t border-[#1f1f1f] bg-[#0f0f0f]/95 backdrop-blur-xl" dir="rtl">
+    <div className="fixed bottom-0 left-0 right-0 w-full z-50 border-t border-[#1f1f1f] bg-[#0f0f0f]/95 backdrop-blur-xl" dir={dir}>
       <div className="flex items-center gap-1 overflow-x-auto scrollbar-none snap-x px-3 py-2 max-w-lg mx-auto md:pb-safe">
-        {navItems.map(({ id, icon: Icon, label, pro }) => {
+        {navItems.map(({ id, icon: Icon, pro }) => {
           const isActive = currentPage === id;
+          const label = t(`nav_${id}`);
           return (
             <button
               key={id}
@@ -47,3 +51,4 @@ export function FloatingNav({ currentPage, onPageChange, isPro }: FloatingNavPro
     </div>
   );
 }
+

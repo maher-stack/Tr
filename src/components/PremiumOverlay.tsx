@@ -1,5 +1,6 @@
 import React from 'react';
 import { Crown, Lock, ChevronRight, Check } from 'lucide-react';
+import { useTranslation } from '../lib/LanguageContext';
 
 interface PremiumOverlayProps {
   onUpgrade: () => void;
@@ -9,8 +10,10 @@ interface PremiumOverlayProps {
 }
 
 export function PremiumOverlay({ onUpgrade, title, description, benefits }: PremiumOverlayProps) {
+  const { t, dir } = useTranslation();
+
   return (
-    <div className="flex-1 flex items-center justify-center p-4 md:p-10 min-h-[80vh] w-full bg-[#090909]/60 backdrop-blur-md relative overflow-hidden" dir="rtl">
+    <div className="flex-1 flex items-center justify-center p-4 md:p-10 min-h-[80vh] w-full bg-[#090909]/60 backdrop-blur-md relative overflow-hidden" dir={dir}>
       {/* Dynamic Background Glows */}
       <div className="absolute top-1/4 right-1/4 w-72 h-72 bg-emerald-500/10 rounded-full filter blur-[100px] pointer-events-none"></div>
       <div className="absolute bottom-1/4 left-1/4 w-80 h-80 bg-emerald-600/5 rounded-full filter blur-[120px] pointer-events-none"></div>
@@ -23,7 +26,7 @@ export function PremiumOverlay({ onUpgrade, title, description, benefits }: Prem
 
         <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-emerald-500/10 text-emerald-500 text-xs font-bold rounded-full mb-4 border border-emerald-500/20">
           <Lock className="w-3.5 h-3.5" />
-          <span>ميزة احترافية PRO</span>
+          <span>{t('proFeature')} PRO</span>
         </div>
 
         <h3 className="text-2xl font-black text-white mb-2 tracking-tight">
@@ -35,8 +38,8 @@ export function PremiumOverlay({ onUpgrade, title, description, benefits }: Prem
         </p>
 
         {/* Benefits List */}
-        <div className="bg-[#161616] border border-[#222] rounded-xl p-5 mb-8 text-right space-y-3.5">
-          <p className="text-xs font-bold text-gray-500 tracking-wider uppercase mb-1">ما ستحصل عليه في الخطة الاحترافية:</p>
+        <div className="bg-[#161616] border border-[#222] rounded-xl p-5 mb-8 text-right ltr:text-left space-y-3.5">
+          <p className="text-xs font-bold text-gray-400 tracking-wider uppercase mb-1">{t('premium_benefits_title')}</p>
           {benefits.map((benefit, idx) => (
             <div key={idx} className="flex items-start gap-2.5">
               <span className="shrink-0 w-4.5 h-4.5 rounded-full bg-emerald-500/10 flex items-center justify-center text-emerald-400">
@@ -53,12 +56,11 @@ export function PremiumOverlay({ onUpgrade, title, description, benefits }: Prem
           onClick={onUpgrade}
           className="w-full py-4 px-6 bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-400 hover:to-emerald-500 text-black font-extrabold rounded-xl shadow-lg shadow-emerald-500/10 hover:shadow-emerald-500/20 transition-all duration-300 md:text-md active:scale-[0.98] cursor-pointer flex items-center justify-center gap-2 group"
         >
-          <span>رقي حسابك الآن - فقط بـ $4.99/شهر</span>
-          <ChevronRight className="w-4 h-4 transition-transform group-hover:-translate-x-1" />
+          <span>{t('upgradeNow')} • $4.99/{dir === 'rtl' ? 'شهر' : 'mo'}</span>
+          <ChevronRight className="w-4 h-4 transition-transform group-hover:translate-x-1 rtl:group-hover:-translate-x-1" />
         </button>
-
-        <p className="text-[10px] text-gray-600 mt-4 font-bold">إلغاء في أي وقت • دعم فوري دائم • تجربة خالية من المخاطر</p>
       </div>
     </div>
   );
 }
+
