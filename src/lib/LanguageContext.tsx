@@ -228,6 +228,20 @@ const dictionary: Record<Language, Record<string, string>> = {
     settings_logout_btn: "Log Out Safely",
     settings_whatsapp_preview: "WhatsApp Alert Notification Preview",
     settings_whatsapp_preview_desc: "This is a real mockup of the automated billing message that will be broadcasted to your phone before renewable dates:",
+
+    // Landing Page
+    landing_hero_title: "Manage Your Subscriptions Like a Pro",
+    landing_hero_subtitle: "The all-in-one platform to track, optimize, and sync your digital expenses with cloud-native security.",
+    landing_get_started: "Get Started for Free",
+    landing_login: "Log In to Account",
+    landing_feature_1_title: "Smart Tracking",
+    landing_feature_1_desc: "Monitor all your monthly and annual plans in real-time with automatic cost conversion.",
+    landing_feature_2_title: "Cloud Syncing",
+    landing_feature_2_desc: "Your data is secured in the cloud and synced across all your devices instantly.",
+    landing_feature_3_title: "WhatsApp Alerts",
+    landing_feature_3_desc: "Receive automated renewal notifications before expiry to avoid service interruptions.",
+    landing_feature_4_title: "Financial Analytics",
+    landing_feature_4_desc: "Gain deep insights into your spending habits with interactive charts and forecasts.",
   },
   ar: {
     // Shared / Core
@@ -444,6 +458,20 @@ const dictionary: Record<Language, Record<string, string>> = {
     settings_logout_btn: "تسجيل مغادرة فوري وآمن",
     settings_whatsapp_preview: "معاينة حية لتنبيه واتساب المجدول لحسابك",
     settings_whatsapp_preview_desc: "مثال حقيقي واقعي لشكل الرسالة المؤتمتة التي يبثها نظام التنبيهات السحابي لرقمك المسجل بدقة قبل الاستحقاق كدعم وقائي:",
+
+    // Landing Page
+    landing_hero_title: "أدِر اشتراكاتك وفواتيرك باحترافية",
+    landing_hero_subtitle: "المنصة المتكاملة لتتبع وتحسين ومزامنة نفقاتك الرقمية في مكان واحد مع حماية سحابية متطورة.",
+    landing_get_started: "ابدأ الآن مجاناً 🚀",
+    landing_login: "تسجيل الدخول للحساب",
+    landing_feature_1_title: "تتبع ذكي ومتطور",
+    landing_feature_1_desc: "راقب جميع خططك الشهرية والسنوية في الوقت الفعلي مع تحويل تلقائي للعملات.",
+    landing_feature_2_title: "مزامنة سحابية فورية",
+    landing_feature_2_desc: "بياناتك مؤمنة بالكامل في السحابة ومزامنة عبر جميع أجهزتك لحظة بلحظة.",
+    landing_feature_3_title: "تنبيهات واتساب دورية",
+    landing_feature_3_desc: "تلقَ إشعارات تجديد تلقائية قبل انتهاء الفترة لتجنب انقطاع الخدمات المفاجئ.",
+    landing_feature_4_title: "تحليلات مالية معمقة",
+    landing_feature_4_desc: "افهم عادات إنفاقك بدقة من خلال رسوم بيانية تفاعلية وتوقعات مستقبلية ذكية.",
   }
 };
 

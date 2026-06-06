@@ -10,6 +10,7 @@ import { CurrencyConverterPage } from './pages/CurrencyConverterPage';
 import { SettingsPage } from './pages/SettingsPage';
 import { PricingPage } from './pages/PricingPage';
 import { AuthPage } from './pages/AuthPage';
+import { LandingPage } from './pages/LandingPage';
 import { FinancialAnalytics } from './pages/FinancialAnalytics';
 import { TeamWorkspace } from './pages/TeamWorkspace';
 import { PaymentHistory } from './pages/PaymentHistory';
@@ -54,8 +55,12 @@ export default function App() {
   } = useAuth();
   const { subscriptions, addSubscription, updateSubscription, deleteSubscription } = useSubscriptions(currentUser?.id);
   const [currentPage, setCurrentPage] = useState<PageId>('dashboard');
+  const [showAuth, setShowAuth] = useState(false);
 
   if (!currentUser) {
+    if (!showAuth) {
+      return <LandingPage onGetStarted={() => setShowAuth(true)} />;
+    }
     return (
       <AuthPage 
         onLogin={login} 
