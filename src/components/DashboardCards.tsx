@@ -3,6 +3,7 @@ import { Subscription, convertCurrency, CURRENCY_SYMBOLS } from '../types';
 import { differenceInDays, parseISO } from 'date-fns';
 import { Wallet, Activity, CalendarClock, AlertTriangle } from 'lucide-react';
 import { motion } from 'motion/react';
+import { useTranslation } from '../lib/LanguageContext';
 
 interface DashboardCardsProps {
   subscriptions: Subscription[];
@@ -10,6 +11,7 @@ interface DashboardCardsProps {
 }
 
 export function DashboardCards({ subscriptions, localCurrency = 'USD' }: DashboardCardsProps) {
+  const { t } = useTranslation();
   const activeSubscriptions = subscriptions.filter(s => s.status === 'active');
   const symbol = CURRENCY_SYMBOLS[localCurrency] || '$';
   
@@ -64,28 +66,28 @@ export function DashboardCards({ subscriptions, localCurrency = 'USD' }: Dashboa
     >
       <motion.div variants={itemVariants}>
         <Card
-          title="المصاريف الشهرية الموحدة"
+          title={t('card_monthly_spend')}
           value={`${monthlySpend.toFixed(2)} ${symbol}`}
           icon={<Wallet className="text-gray-400 w-5 h-5" />}
         />
       </motion.div>
       <motion.div variants={itemVariants}>
         <Card
-          title="المصاريف السنوية الموحدة"
+          title={t('card_annual_spend')}
           value={`${yearlySpend.toFixed(2)} ${symbol}`}
           icon={<Activity className="text-gray-400 w-5 h-5" />}
         />
       </motion.div>
       <motion.div variants={itemVariants}>
         <Card
-          title="الاشتراكات النشطة"
+          title={t('card_active_subs')}
           value={activeSubscriptions.length.toString()}
           icon={<Activity className="text-gray-400 w-5 h-5" />}
         />
       </motion.div>
       <motion.div variants={itemVariants}>
         <Card
-          title="تجديدات قريبة"
+          title={t('card_upcoming_renewals', { days: 7 })}
           value={upcomingRenewals.toString()}
           icon={upcomingRenewals > 0 ? <AlertTriangle className="text-emerald-400 w-5 h-5" /> : <CalendarClock className="text-gray-400 w-5 h-5" />}
           valueColor={upcomingRenewals > 0 ? 'text-emerald-400' : 'text-white'}

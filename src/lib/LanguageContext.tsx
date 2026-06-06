@@ -32,6 +32,7 @@ const dictionary: Record<Language, Record<string, string>> = {
     upgradeNow: "Upgrade Now",
     cancel: "Cancel",
     save: "Save",
+    add: "Add",
     loading: "Loading...",
     currency: "USD",
     
@@ -220,6 +221,7 @@ const dictionary: Record<Language, Record<string, string>> = {
     upgradeNow: "الترقية الآن",
     cancel: "إلغاء",
     save: "حفظ",
+    add: "إضافة",
     loading: "تحميل...",
     currency: "دولار",
     

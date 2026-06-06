@@ -5,6 +5,7 @@ import { Charts } from '../components/Charts';
 import { SubscriptionList } from '../components/SubscriptionList';
 import { AddSubscriptionModal } from '../components/AddSubscriptionModal';
 import { Subscription } from '../types';
+import { useTranslation } from '../lib/LanguageContext';
 
 interface DashboardProps {
   subscriptions: Subscription[];
@@ -20,6 +21,7 @@ interface DashboardProps {
 export function Dashboard({ subscriptions, addSubscription, updateSubscription, deleteSubscription, isPro, onUpgradeClick, renewalAlertDays, localCurrency = 'USD' }: DashboardProps) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingSub, setEditingSub] = useState<Subscription | null>(null);
+  const { t } = useTranslation();
 
   const handleCreateNew = () => {
     if (!isPro && subscriptions.length >= 4) {
@@ -52,14 +54,14 @@ export function Dashboard({ subscriptions, addSubscription, updateSubscription, 
             <div className="w-full">
               <div className="mb-6 flex items-center justify-between">
                 <h3 className="text-sm font-semibold text-gray-400 flex items-center gap-2">
-                  قائمة الاشتراكات
+                  {t('sub_list_title')}
                 </h3>
                 <button
                   onClick={handleCreateNew}
-                  className="inline-flex items-center gap-2 px-3 py-2 text-xs font-bold text-black bg-white rounded-lg hover:bg-gray-200 transition-colors"
+                  className="inline-flex items-center gap-2 px-3 py-2 text-xs font-bold text-black bg-white rounded-lg hover:bg-gray-200 transition-colors cursor-pointer"
                 >
                   <Plus className="w-4 h-4" />
-                  <span className="hidden sm:inline">اشتراك جديد</span>
+                  <span className="hidden sm:inline">{t('new_sub_btn')}</span>
                 </button>
               </div>
               <SubscriptionList 
