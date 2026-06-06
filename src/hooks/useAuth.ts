@@ -50,6 +50,27 @@ const getOrInitializeTrialStart = (): string => {
 };
 
 export function useAuth() {
+  // 🧹 مسح تلقائي للمستخدمين القدامى لمرة واحدة تطبيقاً لطلب المستخدم للبدء من الصفر
+  const CLEAN_KEY = 'site_tracko_forced_cleanup_v9';
+  if (!localStorage.getItem(CLEAN_KEY)) {
+    localStorage.removeItem('site_tracko_current_user');
+    localStorage.removeItem('site_tracko_users');
+    localStorage.removeItem('site_tracko_trial_start');
+    localStorage.removeItem('_st_metric_tstamp');
+    // مسح كافة الاشتراكات المحفوظة محلياً لبدء مزامنة نظيفة تماماً من قاعدة البيانات
+    const keys = Object.keys(localStorage);
+    keys.forEach(k => {
+      if (k.startsWith('subscriptions_') || k === 'subscriptions') {
+        localStorage.removeItem(k);
+      }
+    });
+    localStorage.setItem(CLEAN_KEY, 'true');
+    // تسجيل الخروج الفعلي من سوبابيز إن وجد
+    if (supabase) {
+      supabase.auth.signOut().catch(() => {});
+    }
+  }
+
   const [currentUser, setCurrentUser] = useState<User | null>(() => {
     const saved = localStorage.getItem('site_tracko_current_user');
     return saved ? JSON.parse(saved) : null;
@@ -72,11 +93,25 @@ export function useAuth() {
       if (session?.user) {
         setLoading(true);
         try {
-          const { data: profile, error } = await supabase
-            .from('profiles')
-            .select('*')
-            .eq('id', session.user.id)
-            .single();
+          // جلب البروفايل من قاعدة البيانات مع ميزة إعادة المحاولة في حال وجود تأخر بسيط في الـ Trigger لقاعدة البيانات
+          let profile = null;
+          let fetchAttempts = 3;
+          while (fetchAttempts > 0) {
+            const { data, error: fetchError } = await supabase
+              .from('profiles')
+              .select('*')
+              .eq('id', session.user.id)
+              .maybeSingle();
+
+            if (data) {
+              profile = data;
+              break;
+            }
+            fetchAttempts--;
+            if (fetchAttempts > 0) {
+              await new Promise(resolve => setTimeout(resolve, 350));
+            }
+          }
 
           if (profile) {
             const user: User = {
@@ -94,21 +129,9 @@ export function useAuth() {
             setTrialStartDate(user.trialStartDate || new Date().toISOString());
             localStorage.setItem('site_tracko_current_user', JSON.stringify(user));
           } else {
-            // إنشاء بروفايل في حال تعذّر الـ Trigger أو وجود تأخير بسيط
+            // كخيار احتياطي أقصى في حال انقطاع الـ triggers أو عدم تهيئتها بعد
             const defaultName = session.user.user_metadata?.name || session.user.email?.split('@')[0] || '';
             const testDate = new Date().toISOString();
-            const newProfile = {
-              id: session.user.id,
-              name: defaultName,
-              is_pro: false,
-              phone: session.user.user_metadata?.phone || '',
-              country_code: session.user.user_metadata?.country_code || '+966',
-              trial_start_date: testDate,
-              local_currency: 'USD',
-              renewal_alert_days: 3
-            };
-            await supabase.from('profiles').upsert(newProfile);
-
             const user: User = {
               id: session.user.id,
               email: session.user.email || '',
@@ -116,8 +139,8 @@ export function useAuth() {
               isPro: false,
               renewalAlertDays: 3,
               localCurrency: 'USD',
-              phone: newProfile.phone,
-              countryCode: newProfile.country_code,
+              phone: session.user.user_metadata?.phone || '',
+              countryCode: session.user.user_metadata?.country_code || '+966',
               trialStartDate: testDate
             };
             setCurrentUser(user);
@@ -183,21 +206,18 @@ export function useAuth() {
           if (error) throw error;
           
           if (data?.user) {
-            // نقوم بإنشاء البروفايل فوراً وبشكل صريح لزيادة الضمان بالتوازي مع الـ Triggers
-            const testDate = new Date().toISOString();
+            // الانتظار للحظة قصيرة لضمان قيام الـ Trigger بإنشاء السجل في جدول profiles
+            await new Promise(resolve => setTimeout(resolve, 500));
+            // نقوم بتحديث معلومات الهاتف والرمز المخصص في البروفيل المنشأ تلقائياً من الـ Trigger
             const { error: profileError } = await supabase
               .from('profiles')
-              .upsert({
-                id: data.user.id,
+              .update({
                 name: name || email.split('@')[0],
                 phone: phone || '',
-                country_code: countryCode || '+966',
-                is_pro: false,
-                trial_start_date: testDate,
-                local_currency: 'USD',
-                renewal_alert_days: 3
-              });
-            if (profileError) console.warn("Notice: profile handled by Trigger or updated.", profileError.message);
+                country_code: countryCode || '+966'
+              })
+              .eq('id', data.user.id);
+            if (profileError) console.warn("Notice on profile update:", profileError.message);
           }
           return { success: true };
         } else {
