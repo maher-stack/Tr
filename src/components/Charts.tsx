@@ -1,5 +1,5 @@
 import React from 'react';
-import { Subscription } from '../types';
+import { Subscription, translateCategory } from '../types';
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, Legend } from 'recharts';
 import { useTheme } from '../lib/ThemeContext';
 import { useTranslation } from '../lib/LanguageContext';
@@ -17,10 +17,11 @@ export function Charts({ subscriptions }: ChartsProps) {
   // Group by category to calculate costs
   const categoryData = activeSubs.reduce((acc, sub) => {
     const costMonthly = sub.cycle === 'monthly' ? sub.cost : sub.cost / 12;
-    if (!acc[sub.category]) {
-      acc[sub.category] = { name: sub.category, value: 0, color: sub.color };
+    const translatedCat = translateCategory(sub.category, language);
+    if (!acc[translatedCat]) {
+      acc[translatedCat] = { name: translatedCat, value: 0, color: sub.color };
     }
-    acc[sub.category].value += costMonthly;
+    acc[translatedCat].value += costMonthly;
     return acc;
   }, {} as Record<string, { name: string, value: number, color: string }>);
 

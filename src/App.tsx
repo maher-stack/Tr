@@ -147,7 +147,7 @@ export default function App() {
             <button 
               onClick={toggleTheme}
               className="p-2 rounded-lg border border-slate-200 dark:border-slate-800 hover:border-blue-500/30 dark:hover:border-blue-500/30 bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-300 hover:text-blue-600 dark:hover:text-blue-400 transition-all hover:scale-[1.02] active:scale-[0.98] shadow-sm cursor-pointer flex items-center justify-center"
-              title={theme === 'light' ? 'الوضع المظلم' : 'الوضع الفاتح'}
+              title={theme === 'light' ? (language === 'ar' ? 'الوضع المظلم' : 'Dark Mode') : (language === 'ar' ? 'الوضع الفاتح' : 'Light Mode')}
             >
               {theme === 'light' ? <Moon className="w-4.5 h-4.5 text-slate-700 hover:text-blue-600" /> : <Sun className="w-4.5 h-4.5 text-amber-500" />}
             </button>

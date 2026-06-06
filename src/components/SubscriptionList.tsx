@@ -1,5 +1,5 @@
 import React from 'react';
-import { Subscription, convertCurrency, CURRENCY_SYMBOLS } from '../types';
+import { Subscription, convertCurrency, getCurrencySymbol, translateCategory } from '../types';
 import { differenceInDays, parseISO, format } from 'date-fns';
 import { ar, enUS } from 'date-fns/locale';
 import { Edit2, Trash2, CheckCircle2, XCircle } from 'lucide-react';
@@ -60,15 +60,15 @@ export function SubscriptionList({ subscriptions, onEdit, onDelete, renewalAlert
                             </span>
                           )}
                         </div>
-                        <p className="text-xs text-slate-400 dark:text-slate-500 mt-1">{sub.category}</p>
+                        <p className="text-xs text-slate-400 dark:text-slate-500 mt-1">{translateCategory(sub.category, language)}</p>
                       </div>
                     </div>
                   </td>
                   <td className="px-6 py-4">
                     {(() => {
                       const originalCurrency = sub.currency || 'USD';
-                      const symbolOrigin = CURRENCY_SYMBOLS[originalCurrency] || '$';
-                      const symbolLocal = CURRENCY_SYMBOLS[localCurrency] || '$';
+                      const symbolOrigin = getCurrencySymbol(originalCurrency, language);
+                      const symbolLocal = getCurrencySymbol(localCurrency, language);
                       const localValue = convertCurrency(sub.cost, originalCurrency, localCurrency);
                       const isDifferent = originalCurrency !== localCurrency;
 
@@ -78,7 +78,7 @@ export function SubscriptionList({ subscriptions, onEdit, onDelete, renewalAlert
                             {sub.cost.toFixed(2)} {symbolOrigin}
                           </div>
                           {isDifferent && (
-                            <div className="text-[10px] text-blue-600 dark:text-blue-400 font-bold font-mono mt-0.5" title="معادل بالعملة المحلية">
+                            <div className="text-[10px] text-blue-600 dark:text-blue-400 font-bold font-mono mt-0.5" title={language === 'ar' ? "معادل بالعملة المحلية" : "Local currency equivalent"}>
                               ≈ {localValue.toFixed(2)} {symbolLocal}
                             </div>
                           )}

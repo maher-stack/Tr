@@ -1,5 +1,5 @@
 import React from 'react';
-import { Subscription, convertCurrency, CURRENCY_SYMBOLS } from '../types';
+import { Subscription, convertCurrency, CURRENCY_SYMBOLS, translateCategory } from '../types';
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell, AreaChart, Area, PieChart, Pie, Legend } from 'recharts';
 import { TrendingUp, Sparkles, Lightbulb, PiggyBank, Receipt } from 'lucide-react';
 import { motion } from 'motion/react';
@@ -42,11 +42,12 @@ export function FinancialAnalytics({ subscriptions, localCurrency = 'USD' }: Fin
   const categoryData = activeSubs.reduce((acc, sub) => {
     const monthlyCost = sub.cycle === 'monthly' ? sub.cost : sub.cost / 12;
     const converted = convertCurrency(monthlyCost, sub.currency || 'USD', localCurrency);
+    const translatedCat = translateCategory(sub.category, language);
     
-    if (!acc[sub.category]) {
-      acc[sub.category] = { name: sub.category, value: 0, color: sub.color || '#3b82f6' };
+    if (!acc[translatedCat]) {
+      acc[translatedCat] = { name: translatedCat, value: 0, color: sub.color || '#3b82f6' };
     }
-    acc[sub.category].value += converted;
+    acc[translatedCat].value += converted;
     return acc;
   }, {} as Record<string, { name: string, value: number, color: string }>);
 
@@ -499,7 +500,7 @@ export function FinancialAnalytics({ subscriptions, localCurrency = 'USD' }: Fin
                         <span className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: sub.color }} />
                         {sub.name}
                       </td>
-                      <td className="py-3.5 px-4 text-slate-500 dark:text-slate-400 text-right ltr:text-left">{sub.category}</td>
+                      <td className="py-3.5 px-4 text-slate-500 dark:text-slate-400 text-right ltr:text-left">{translateCategory(sub.category, language)}</td>
                       <td className="py-3.5 px-4 text-slate-600 dark:text-slate-350 font-mono text-right ltr:text-left">
                         {sub.cost.toFixed(2)} {currencySymbol} <span className="text-[9px] text-slate-500">({sub.cycle === 'monthly' ? (language === 'ar' ? 'شهري' : 'monthly') : (language === 'ar' ? 'سنوي' : 'yearly')})</span>
                       </td>

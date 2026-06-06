@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Bell, Database, Shield, LogOut, Check, X, Edit2, Crown, Zap, Lock, Coins, MessageSquare, Send, Mail, ChevronDown, ExternalLink } from 'lucide-react';
 import { User } from '../hooks/useAuth';
-import { Subscription, CURRENCY_LABELS } from '../types';
+import { Subscription, getCurrencyLabel, CURRENCY_LABELS_EN } from '../types';
 import { useTranslation } from '../lib/LanguageContext';
 
 const COUNTRIES = [
@@ -498,9 +498,9 @@ export function SettingsPage({ currentUser, onLogout, subscriptions, onUpdateUse
                    onChange={(e) => onUpdateUser?.({ localCurrency: e.target.value })}
                    className="w-full px-4 py-3 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl focus:ring-1 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all text-slate-800 dark:text-white text-xs cursor-pointer font-bold shadow-sm"
                  >
-                   {Object.entries(CURRENCY_LABELS).map(([code, label]) => (
+                   {Object.keys(CURRENCY_LABELS_EN).map(code => (
                      <option key={code} value={code} className="bg-white dark:bg-slate-900 text-slate-800" >
-                       {label}
+                       {getCurrencyLabel(code, language)}
                      </option>
                    ))}
                  </select>

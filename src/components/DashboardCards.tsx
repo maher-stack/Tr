@@ -1,5 +1,5 @@
 import React from 'react';
-import { Subscription, convertCurrency, CURRENCY_SYMBOLS } from '../types';
+import { Subscription, convertCurrency, getCurrencySymbol } from '../types';
 import { differenceInDays, parseISO } from 'date-fns';
 import { Wallet, Activity, CalendarClock, AlertTriangle } from 'lucide-react';
 import { motion } from 'motion/react';
@@ -11,9 +11,9 @@ interface DashboardCardsProps {
 }
 
 export function DashboardCards({ subscriptions, localCurrency = 'USD' }: DashboardCardsProps) {
-  const { t } = useTranslation();
+  const { t, language } = useTranslation();
   const activeSubscriptions = subscriptions.filter(s => s.status === 'active');
-  const symbol = CURRENCY_SYMBOLS[localCurrency] || '$';
+  const symbol = getCurrencySymbol(localCurrency, language);
   
   // Calculate total monthly spend with live currency conversion
   const monthlySpend = activeSubscriptions.reduce((acc, sub) => {

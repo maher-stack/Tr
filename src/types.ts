@@ -18,7 +18,30 @@ export const CATEGORY_COLORS: Record<string, string> = {
   'أدوات': '#10b981', // emerald-500
   'استضافة': '#f59e0b', // amber-500
   'أخرى': '#6b7280', // gray-500
+  'Entertainment': '#ec4899',
+  'Software': '#3b82f6',
+  'Utilities': '#10b981',
+  'Hosting': '#f59e0b',
+  'Other': '#6b7280',
 };
+
+export function translateCategory(cat: string, lang: 'ar' | 'en'): string {
+  if (lang === 'ar') {
+    if (cat === 'Entertainment') return 'ترفيه';
+    if (cat === 'Software') return 'برمجيات';
+    if (cat === 'Utilities') return 'أدوات';
+    if (cat === 'Hosting') return 'استضافة';
+    if (cat === 'Other') return 'أخرى';
+    return cat;
+  } else {
+    if (cat === 'ترفيه') return 'Entertainment';
+    if (cat === 'برمجيات') return 'Software';
+    if (cat === 'أدوات') return 'Utilities';
+    if (cat === 'استضافة') return 'Hosting';
+    if (cat === 'أخرى') return 'Other';
+    return cat;
+  }
+}
 
 // Rates relative to 1 USD (1 USD = X currency units)
 export const CURRENCY_RATES_TO_USD: Record<string, number> = {
@@ -52,15 +75,15 @@ export const CURRENCY_SYMBOLS: Record<string, string> = {
   USD: '$',
   EUR: '€',
   GBP: '£',
-  SAR: 'ر.س',
-  AED: 'د.إ',
-  KWD: 'د.ك',
-  QAR: 'ر.ق',
-  BHD: 'د.ب',
-  OMR: 'ر.ع',
-  JOD: 'د.ا',
-  EGP: 'ج.م',
-  MAD: 'د.م.',
+  SAR: 'SAR',
+  AED: 'AED',
+  KWD: 'KWD',
+  QAR: 'QAR',
+  BHD: 'BHD',
+  OMR: 'OMR',
+  JOD: 'JOD',
+  EGP: 'EGP',
+  MAD: 'MAD',
   TRY: '₺',
   CAD: 'C$',
   AUD: 'A$',
@@ -71,11 +94,57 @@ export const CURRENCY_SYMBOLS: Record<string, string> = {
   BRL: 'R$',
   MXN: 'Mex$',
   RUB: '₽',
+  DZD: 'DZD',
+  IQD: 'IQD',
+};
+
+export const CURRENCY_SYMBOLS_AR: Record<string, string> = {
+  SAR: 'ر.س',
+  AED: 'د.إ',
+  KWD: 'د.ك',
+  QAR: 'ر.ق',
+  BHD: 'د.ب',
+  OMR: 'ر.ع',
+  JOD: 'د.ا',
+  EGP: 'ج.م',
+  MAD: 'د.م.',
   DZD: 'د.ج',
   IQD: 'د.ع',
 };
 
-export const CURRENCY_LABELS: Record<string, string> = {
+export function getCurrencySymbol(code: string, lang: 'ar' | 'en'): string {
+  if (lang === 'ar' && CURRENCY_SYMBOLS_AR[code]) return CURRENCY_SYMBOLS_AR[code];
+  return CURRENCY_SYMBOLS[code] || '$';
+}
+
+export const CURRENCY_LABELS_EN: Record<string, string> = {
+  USD: '🇺🇸 US Dollar ($)',
+  EUR: '🇪🇺 Euro (€)',
+  GBP: '🇬🇧 British Pound (£)',
+  SAR: '🇸🇦 Saudi Riyal (SAR)',
+  AED: '🇦🇪 UAE Dirham (AED)',
+  KWD: '🇰🇼 Kuwaiti Dinar (KWD)',
+  QAR: '🇶🇦 Qatari Riyal (QAR)',
+  BHD: '🇧🇭 Bahraini Dinar (BHD)',
+  OMR: '🇴🇲 Omani Rial (OMR)',
+  JOD: '🇯🇴 Jordanian Dinar (JOD)',
+  EGP: '🇪🇬 Egyptian Pound (EGP)',
+  MAD: '🇲🇦 Moroccan Dirham (MAD)',
+  TRY: '🇹🇷 Turkish Lira (TRY - ₺)',
+  CAD: '🇨🇦 Canadian Dollar (CAD)',
+  AUD: '🇦🇺 Australian Dollar (AUD)',
+  JPY: '🇯🇵 Japanese Yen (JPY)',
+  CNY: '🇨🇳 Chinese Yuan (CNY)',
+  INR: '🇮🇳 Indian Rupee (INR)',
+  CHF: '🇨🇭 Swiss Franc (CHF)',
+  BRL: '🇧🇷 Brazilian Real (BRL)',
+  MXN: '🇲🇽 Mexican Peso (MXN)',
+  RUB: '🇷🇺 Russian Ruble (RUB)',
+  DZD: '🇩🇿 Algerian Dinar (DZD)',
+  IQD: '🇮🇶 Iraqi Dinar (IQD)',
+};
+
+export const CURRENCY_LABELS_AR: Record<string, string> = {
   USD: '🇺🇸 دولار أمريكي ($)',
   EUR: '🇪🇺 يورو (€)',
   GBP: '🇬🇧 جنيه إسترليني (£)',
@@ -101,6 +170,11 @@ export const CURRENCY_LABELS: Record<string, string> = {
   DZD: '🇩🇿 دينار جزائري (DZD - د.ج)',
   IQD: '🇮🇶 دينار عراقي (IQD - د.ع)',
 };
+
+export function getCurrencyLabel(code: string, lang: 'ar' | 'en'): string {
+  if (lang === 'ar') return CURRENCY_LABELS_AR[code] || code;
+  return CURRENCY_LABELS_EN[code] || code;
+}
 
 export function convertCurrency(amount: number, from: string = 'USD', to: string = 'USD'): number {
   const defaultFrom = from || 'USD';
