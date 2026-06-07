@@ -90,7 +90,7 @@ export function TrialExpiredOverlay({ onUpgrade, title, description }: TrialExpi
           id="btn-trial-upgrade"
         >
           <Crown className="w-4 h-4 text-white mr-1" />
-          <span>{t('upgradeNow')} • $4.99/{dir === 'rtl' ? 'شهر' : 'mo'}</span>
+          <span>{t('upgradeNow')} • $3.00/{dir === 'rtl' ? 'شهر' : 'mo'}</span>
           <ChevronRight className="w-4 h-4 transition-transform group-hover:translate-x-1 ltr:group-hover:translate-x-1" />
         </button>
 

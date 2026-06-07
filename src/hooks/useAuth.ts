@@ -6,6 +6,7 @@ export interface User {
   email: string;
   name: string;
   isPro: boolean;
+  planTier?: 'free' | 'pro' | 'ultimate';
   renewalAlertDays?: number;
   localCurrency?: string;
   whatsappEnabled?: boolean;
@@ -19,11 +20,11 @@ export interface User {
 export function useAuth() {
   // Force a one-time clean of all local storage related to the app
   useEffect(() => {
-    const CLEAN_KEY = 'site_tracko_forced_cleanup_v10';
+    const CLEAN_KEY = 'site_tracko_forced_cleanup_v11';
     if (!localStorage.getItem(CLEAN_KEY)) {
       const keys = Object.keys(localStorage);
       keys.forEach(k => {
-        if (k.startsWith('site_tracko_') || k.startsWith('subscriptions_') || k === 'subscriptions' || k === '_st_metric_tstamp') {
+        if (k.startsWith('site_tracko_') || k.startsWith('subscriptions_') || k === 'subscriptions' || k === '_st_metric_tstamp' || k === 'user' || k.includes('auth')) {
           localStorage.removeItem(k);
         }
       });
@@ -74,11 +75,14 @@ export function useAuth() {
         .single();
 
       if (profile) {
+        const storedTier = localStorage.getItem(`site_tracko_plan_tier_${user.id}`);
+        const resolvedTier = profile.is_pro ? (storedTier === 'ultimate' ? 'ultimate' : 'pro') : 'free';
         setCurrentUser({
           id: user.id,
           email: user.email || '',
           name: profile.name || user.user_metadata?.name || '',
           isPro: profile.is_pro || false,
+          planTier: resolvedTier,
           renewalAlertDays: profile.renewal_alert_days || 3,
           localCurrency: profile.local_currency || 'USD',
           phone: profile.phone || '',
@@ -101,7 +105,7 @@ export function useAuth() {
     countryCode?: string,
     isSignUp?: boolean
   ): Promise<{ success: boolean; error?: string }> => {
-    if (!supabase) return { success: false, error: 'Supabase not configured' };
+    if (!supabase) return { success: false, error: 'الاتصال بقاعدة بيانات Supabase غير مفعل. الرجاء إضافة VITE_SUPABASE_URL و VITE_SUPABASE_ANON_KEY في الإعدادات.' };
     
     setLoading(true);
     setAuthError(null);
@@ -152,6 +156,11 @@ export function useAuth() {
       if (updates.localCurrency !== undefined) dbFields.local_currency = updates.localCurrency;
 
       await supabase.from('profiles').update(dbFields).eq('id', currentUser.id);
+      
+      if (updates.planTier !== undefined) {
+        localStorage.setItem(`site_tracko_plan_tier_${currentUser.id}`, updates.planTier);
+      }
+      
       setCurrentUser({ ...currentUser, ...updates });
     }
   };

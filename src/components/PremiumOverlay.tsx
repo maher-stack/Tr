@@ -56,7 +56,7 @@ export function PremiumOverlay({ onUpgrade, title, description, benefits }: Prem
           onClick={onUpgrade}
           className="w-full py-4 px-6 bg-blue-600 hover:bg-blue-500 text-white font-extrabold rounded-xl shadow-lg shadow-blue-500/10 hover:shadow-blue-500/20 transition-all duration-300 md:text-md active:scale-[0.98] cursor-pointer flex items-center justify-center gap-2 group"
         >
-          <span>{t('upgradeNow')} • $4.99/{dir === 'rtl' ? 'شهر' : 'mo'}</span>
+          <span>{t('upgradeNow')} • $3.00/{dir === 'rtl' ? 'شهر' : 'mo'}</span>
           <ChevronRight className="w-4 h-4 transition-transform group-hover:translate-x-1 rtl:group-hover:-translate-x-1" />
         </button>
       </div>

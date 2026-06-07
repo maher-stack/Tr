@@ -1,7 +1,9 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { Subscription, convertCurrency, CURRENCY_SYMBOLS } from '../types';
-import { CreditCard, Calendar, CheckCircle2, Search, Filter, FileText } from 'lucide-react';
+import { CreditCard, Calendar, CheckCircle2, Search, Filter, FileText, Loader } from 'lucide-react';
 import { useTranslation } from '../lib/LanguageContext';
+import { useAuth } from '../hooks/useAuth';
+import { dbGetPaymentHistory } from '../lib/supabaseClient';
 
 interface PaymentHistoryProps {
   subscriptions: Subscription[];
@@ -23,64 +25,54 @@ interface HistoricalPayment {
 
 export function PaymentHistory({ subscriptions, localCurrency = 'USD' }: PaymentHistoryProps) {
   const { language, dir, t } = useTranslation();
+  const { currentUser } = useAuth();
+  const user = currentUser;
   const [searchTerm, setSearchTerm] = useState('');
   const [filterCategory, setFilterCategory] = useState('ALL');
+  const [payments, setPayments] = useState<HistoricalPayment[]>([]);
+  const [loading, setLoading] = useState(true);
   const symbol = CURRENCY_SYMBOLS[localCurrency] || '$';
 
-  // Generate elegant past payments for the active subscriptions mock-dynamically
-  const payments = useMemo(() => {
-    const list: HistoricalPayment[] = [];
-    const activeSubs = subscriptions.filter(s => s.status === 'active');
-
-    activeSubs.forEach((sub, subIdx) => {
-      // Create past 3 payments for each monthly subscription
-      // and past 1 payment for yearly subscription
-      const originalCurrency = sub.currency || 'USD';
-      
-      if (sub.cycle === 'monthly') {
-        const monthsOffset = [1, 2, 3];
-        monthsOffset.forEach(offset => {
-          const date = new Date();
-          date.setMonth(date.getMonth() - offset);
-          date.setDate(12 + (subIdx * 3) % 15); // distribute days nicely
-
-          list.push({
-            id: `inv-${sub.id}-${offset}`,
-            subId: sub.id,
-            name: sub.name,
-            category: sub.category,
-            color: sub.color,
-            date: date.toISOString().split('T')[0],
-            amount: sub.cost,
-            currency: originalCurrency,
-            invoiceNo: `TRK-${10000 + subIdx * 543 + offset * 11}`,
-            cycle: 'monthly'
-          });
-        });
-      } else {
-        // Yearly
-        const date = new Date();
-        date.setFullYear(date.getFullYear() - 1);
-        date.setMonth(date.getMonth() - 2);
-
-        list.push({
-          id: `inv-${sub.id}-y`,
-          subId: sub.id,
-          name: sub.name,
-          category: sub.category,
-          color: sub.color,
-          date: date.toISOString().split('T')[0],
-          amount: sub.cost,
-          currency: originalCurrency,
-          invoiceNo: `TRK-${20000 + subIdx * 678}`,
-          cycle: 'yearly'
-        });
+  // Load actual payments from database
+  useEffect(() => {
+    let active = true;
+    const fetchPayments = async () => {
+      if (!user) {
+        setLoading(false);
+        return;
       }
-    });
+      
+      try {
+        setLoading(true);
+        const data = await dbGetPaymentHistory(user.id);
+        
+        if (active) {
+          const formattedPayments: HistoricalPayment[] = data.map(row => ({
+            id: row.id,
+            subId: row.subscription_id,
+            name: row.subscription_name,
+            category: row.subscriptions?.category || 'General',
+            color: row.subscriptions?.color || '#94a3b8',
+            date: new Date(row.payment_date).toISOString().split('T')[0],
+            amount: Number(row.amount),
+            currency: row.currency || 'USD',
+            invoiceNo: `TRK-${row.id.split('-')[0].toUpperCase()}`,
+            cycle: row.subscriptions?.cycle || 'monthly'
+          }));
+          
+          setPayments(formattedPayments);
+        }
+      } catch (err) {
+        console.error("Failed to load payment history", err);
+      } finally {
+        if (active) setLoading(false);
+      }
+    };
 
-    // Sort chronologically (most recent first)
-    return list.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
-  }, [subscriptions]);
+    fetchPayments();
+
+    return () => { active = false; };
+  }, [user]);
 
   const categories = useMemo(() => {
     const set = new Set(payments.map(p => p.category));
@@ -156,7 +148,11 @@ export function PaymentHistory({ subscriptions, localCurrency = 'USD' }: Payment
           </span>
         </div>
 
-        {filteredPayments.length > 0 ? (
+        {loading ? (
+          <div className="flex justify-center py-10">
+            <Loader className="w-8 h-8 text-blue-500 animate-spin" />
+          </div>
+        ) : filteredPayments.length > 0 ? (
           <div className="space-y-6 relative border-r-2 border-slate-200 dark:border-slate-800/80 pr-6 mr-3 rtl:border-r-2 rtl:border-l-0 ltr:border-l-2 ltr:border-r-0 ltr:pl-6 ltr:pr-0 ltr:ml-3 ltr:mr-0">
             {filteredPayments.map((pay) => {
               const originalSymbol = CURRENCY_SYMBOLS[pay.currency] || '$';

@@ -15,15 +15,16 @@ import {
 } from 'lucide-react';
 import { useTranslation } from '../lib/LanguageContext';
 
-export type PageId = 'dashboard' | 'analytics' | 'team' | 'history' | 'investment' | 'math' | 'currency' | 'pricing' | 'settings';
+export type PageId = 'dashboard' | 'analytics' | 'team' | 'history' | 'tools' | 'pricing' | 'settings';
 
 interface FloatingNavProps {
   currentPage: PageId;
   onPageChange: (page: PageId) => void;
   isPro: boolean;
+  planTier?: 'free' | 'pro' | 'ultimate';
 }
 
-export function FloatingNav({ currentPage, onPageChange, isPro }: FloatingNavProps) {
+export function FloatingNav({ currentPage, onPageChange, isPro, planTier = 'free' }: FloatingNavProps) {
   const { t, dir } = useTranslation();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
@@ -31,9 +32,7 @@ export function FloatingNav({ currentPage, onPageChange, isPro }: FloatingNavPro
     { id: 'analytics', icon: LineChart, pro: true },
     { id: 'team', icon: Users, pro: true },
     { id: 'history', icon: History, pro: true },
-    { id: 'investment', icon: TrendingUp, pro: true },
-    { id: 'math', icon: Calculator, pro: false },
-    { id: 'currency', icon: Coins, pro: true },
+    { id: 'tools', icon: Calculator, pro: false },
     { id: 'pricing', icon: CreditCard },
     { id: 'settings', icon: Settings },
   ];
@@ -73,6 +72,13 @@ export function FloatingNav({ currentPage, onPageChange, isPro }: FloatingNavPro
             {menuItems.map(({ id, icon: Icon, pro }) => {
               const isActive = currentPage === id;
               const label = t(`nav_${id}`);
+              
+              const isItemLocked = pro && (
+                id === 'team'
+                  ? (planTier !== 'ultimate' && planTier !== 'free' && isPro) || !isPro
+                  : !isPro
+              );
+              
               return (
                 <button
                   key={id}
@@ -85,7 +91,7 @@ export function FloatingNav({ currentPage, onPageChange, isPro }: FloatingNavPro
                 >
                   <div className="relative mb-1">
                     <Icon className={`w-5 h-5 ${isActive ? 'opacity-100 text-blue-600 dark:text-blue-400' : 'opacity-70'}`} />
-                    {pro && !isPro && <Lock className="w-2.5 h-2.5 absolute -top-1 -right-1 text-amber-500" />}
+                    {isItemLocked && <Lock className="w-2.5 h-2.5 absolute -top-1 -right-1 text-amber-500" />}
                   </div>
                   <span className="text-[10px] font-bold text-center tracking-tight truncate w-full">{label}</span>
                 </button>

@@ -93,12 +93,12 @@ export function AuthPage({ onLogin, authError, loading = false, supabaseConfigur
           {supabaseConfigured ? (
             <div className="inline-flex items-center gap-1.5 bg-blue-500/10 border border-blue-500/20 text-blue-600 dark:text-blue-400 text-[11px] px-3.5 py-1 rounded-full font-bold">
               <span className="w-1.5 h-1.5 rounded-full bg-blue-500 animate-pulse"></span>
-              {t('supabaseActive')}
+              {t('supabaseActive') || 'Supabase Active'}
             </div>
           ) : (
-            <div className="inline-flex items-center gap-1.5 bg-slate-500/10 border border-slate-500/20 text-slate-600 dark:text-slate-400 text-[11px] px-3.5 py-1 rounded-full font-bold">
-              <span className="w-1.5 h-1.5 rounded-full bg-slate-500"></span>
-              {t('localStorageActive')}
+            <div className="inline-flex items-center gap-1.5 bg-amber-500/10 border border-amber-500/20 text-amber-600 dark:text-amber-400 text-[11px] px-3.5 py-1 rounded-full font-bold">
+              <span className="w-1.5 h-1.5 rounded-full bg-amber-500"></span>
+              {language === 'ar' ? 'الرجاء إضافة مفاتيح Supabase في لوحة الإعدادات' : 'Please add Supabase Keys in Settings'}
             </div>
           )}
         </div>

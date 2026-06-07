@@ -4,9 +4,7 @@ import { useAuth } from './hooks/useAuth';
 import { FloatingNav, PageId } from './components/FloatingNav';
 import { Sidebar } from './components/Sidebar';
 import { Dashboard } from './pages/Dashboard';
-import { InvestmentPage } from './pages/InvestmentPage';
-import { MathCalculatorPage } from './pages/MathCalculatorPage';
-import { CurrencyConverterPage } from './pages/CurrencyConverterPage';
+import { FinanceToolsPage } from './pages/FinanceToolsPage';
 import { SettingsPage } from './pages/SettingsPage';
 import { PricingPage } from './pages/PricingPage';
 import { AuthPage } from './pages/AuthPage';
@@ -72,9 +70,9 @@ export default function App() {
 
   const isPro = currentUser.isPro;
 
-  const handleUpgrade = () => {
+  const handleUpgrade = (tier: 'pro' | 'ultimate') => {
     // Calling database directly from pricing page or handling upgrade via profile update
-    updateUser({ isPro: true, renewalAlertDays: 3 });
+    updateUser({ isPro: true, planTier: tier, renewalAlertDays: 3 });
     setCurrentPage('dashboard');
   };
 
@@ -86,6 +84,26 @@ export default function App() {
     benefits: string[],
     children: React.ReactNode
   ) => {
+    // If accessing Employee Management / Team Workspace page
+    if (pageId === 'team') {
+      const isUltimateOrTrial = currentUser.planTier === 'ultimate' || (isTrialActive && !isPro);
+      if (isUltimateOrTrial) {
+        return children;
+      }
+      
+      // If user is Pro prefix, they need Ultimate tier ($5.50)
+      if (isPro && currentUser.planTier === 'pro') {
+        return (
+          <PremiumOverlay 
+            onUpgrade={() => setCurrentPage('pricing')} 
+            title={language === 'ar' ? "ترقية الباقة إلى القصوى (Ultimate) لعرض إدارة الموظفين" : "Upgrade to Ultimate to access Employee Management"} 
+            description={language === 'ar' ? "إدارة الموظفين ومساحة الفريق متاحة فقط لعملاء باقة Ultimate بقيمة 5.50$ شهرياً." : "Employee Management and team workspace are exclusive to Ultimate plan subscribers."} 
+            benefits={benefits} 
+          />
+        );
+      }
+    }
+
     if (isPremiumActive) {
       return children;
     }
@@ -113,7 +131,7 @@ export default function App() {
     <div className="flex flex-row h-screen w-full bg-[#f8fafc] dark:bg-[#0b0f19] text-slate-800 dark:text-slate-100 font-sans overflow-hidden selection:bg-blue-500/30 selection:text-blue-900 animate-fade-in" dir={dir}>
       {/* Sidebar for Desktop - Lock badges hide automatically if trial is active */}
       <div className="hidden lg:flex shrink-0">
-        <Sidebar currentPage={currentPage} onPageChange={setCurrentPage} isPro={isPremiumActive} />
+        <Sidebar currentPage={currentPage} onPageChange={setCurrentPage} isPro={isPremiumActive} planTier={currentUser.planTier || 'free'} />
       </div>
 
       {/* Main Content Area */}
@@ -229,42 +247,16 @@ export default function App() {
             <PaymentHistory subscriptions={subscriptions} localCurrency={currentUser.localCurrency || 'USD'} />
           )}
 
-          {currentPage === 'investment' && renderPremiumPage(
-            'investment',
-            t('invest_title'),
-            t('invest_desc'),
-            [
-              language === 'ar' ? "حساب العوائد التراكمية المركبة لمدد زمنية طويلة وقصيرة" : "Compound growth modeling with variable timeframes",
-              language === 'ar' ? "محاكاة سيناريوهات السوق المتعددة لتوقعات الأرباح الممكنة" : "Simulate market yield outcomes based on historic averages",
-              language === 'ar' ? "مقارنة نسب نمو الاستثمار بمعدلات التضخم تلقائياً" : "Compare localized inflation rates to portfolio yield curves automatically",
-              language === 'ar' ? "تصدير الرسوم البيانية الاستثمارية لمشاركتها مع مستشار مالي" : "Export geometric growth vectors to share with accredited professionals"
-            ],
-            <InvestmentPage />
-          )}
+          {currentPage === 'tools' && <FinanceToolsPage />}
 
-          {currentPage === 'math' && <MathCalculatorPage />}
-
-          {currentPage === 'currency' && renderPremiumPage(
-            'currency',
-            t('currency_title'),
-            t('currency_desc'),
-            [
-              language === 'ar' ? "مؤشر حي لأسعار الصرف الأكثر استخداماً عالمياً ومحلياً" : "Live indicators of standard exchange rates worldwide",
-              language === 'ar' ? "حساب مباشر وسريع للتحويلات المركبة لعدة عملات وتثقيلها" : "Direct conversions for multiple currencies simultaneously",
-              language === 'ar' ? "خزن تفضيلات العملات المفضلة لسهولة الاستخدام اللاحقة" : "Secure localized preferences memory for quick loading",
-              language === 'ar' ? "عرض متكامل لترند أداء العملات خلال فترات تاريخية" : "Historical trajectory lines demonstrating global coin values"
-            ],
-            <CurrencyConverterPage />
-          )}
-
-          {currentPage === 'pricing' && <PricingPage isPro={isPro} onUpgrade={handleUpgrade} />}
+          {currentPage === 'pricing' && <PricingPage isPro={isPro} planTier={currentUser.planTier || 'free'} onUpgrade={handleUpgrade} />}
           {currentPage === 'settings' && <SettingsPage currentUser={currentUser} onLogout={logout} subscriptions={subscriptions} onUpdateUser={updateUser} />}
         </main>
       </div>
 
       {/* FloatingNav for Mobile/Tablet - Lock badges hidden if trial is active */}
       <div className="lg:hidden">
-        <FloatingNav currentPage={currentPage} onPageChange={setCurrentPage} isPro={isPremiumActive} />
+        <FloatingNav currentPage={currentPage} onPageChange={setCurrentPage} isPro={isPremiumActive} planTier={currentUser.planTier || 'free'} />
       </div>
     </div>
   );

@@ -2,15 +2,16 @@ import React from 'react';
 import { LayoutDashboard, Calculator, Settings, CreditCard, TrendingUp, Coins, Lock, LineChart, Users, History } from 'lucide-react';
 import { useTranslation } from '../lib/LanguageContext';
 
-export type PageId = 'dashboard' | 'analytics' | 'team' | 'history' | 'investment' | 'math' | 'currency' | 'pricing' | 'settings';
+export type PageId = 'dashboard' | 'analytics' | 'team' | 'history' | 'tools' | 'pricing' | 'settings';
 
 interface SidebarProps {
   currentPage: PageId;
   onPageChange: (page: PageId) => void;
   isPro: boolean;
+  planTier?: 'free' | 'pro' | 'ultimate';
 }
 
-export function Sidebar({ currentPage, onPageChange, isPro }: SidebarProps) {
+export function Sidebar({ currentPage, onPageChange, isPro, planTier = 'free' }: SidebarProps) {
   const { t, dir } = useTranslation();
 
   const navItems: Array<{ id: PageId; icon: any; pro?: boolean }> = [
@@ -18,9 +19,7 @@ export function Sidebar({ currentPage, onPageChange, isPro }: SidebarProps) {
     { id: 'analytics', icon: LineChart, pro: true },
     { id: 'team', icon: Users, pro: true },
     { id: 'history', icon: History, pro: true },
-    { id: 'investment', icon: TrendingUp, pro: true },
-    { id: 'math', icon: Calculator, pro: false },
-    { id: 'currency', icon: Coins, pro: true },
+    { id: 'tools', icon: Calculator, pro: false },
     { id: 'pricing', icon: CreditCard },
     { id: 'settings', icon: Settings },
   ];
@@ -48,6 +47,12 @@ export function Sidebar({ currentPage, onPageChange, isPro }: SidebarProps) {
           const isActive = currentPage === id;
           const label = t(`nav_${id}`);
           
+          const isItemLocked = pro && (
+            id === 'team'
+              ? (planTier !== 'ultimate' && planTier !== 'free' && isPro) || !isPro
+              : !isPro
+          );
+          
           return (
             <button
               key={id}
@@ -62,9 +67,9 @@ export function Sidebar({ currentPage, onPageChange, isPro }: SidebarProps) {
               {/* Icon wrapper to keep centering aligned */}
               <div className="shrink-0 flex items-center justify-center w-5 h-5">
                 <Icon 
-                  className={`w-5 h-5 transition-transform duration-300 group-hover/item:scale-110 ${
-                    isActive ? 'opacity-100 text-blue-600 dark:text-blue-400' : 'opacity-60'
-                  }`} 
+                   className={`w-5 h-5 transition-transform duration-300 group-hover/item:scale-110 ${
+                     isActive ? 'opacity-100 text-blue-600 dark:text-blue-400' : 'opacity-60'
+                   }`} 
                 />
               </div>
 
@@ -78,7 +83,7 @@ export function Sidebar({ currentPage, onPageChange, isPro }: SidebarProps) {
               </span>
 
               {/* PRO badge indicator */}
-              {pro && !isPro && (
+              {isItemLocked && (
                 <Lock 
                   className="w-3.5 h-3.5 ml-auto text-slate-400 dark:text-slate-500 shrink-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300" 
                 />
@@ -89,7 +94,7 @@ export function Sidebar({ currentPage, onPageChange, isPro }: SidebarProps) {
                 className="absolute left-full ml-4 px-2.5 py-1.5 bg-[#141414] dark:bg-[#1a1a1a] border border-[#222] dark:border-[#333] text-white text-[11px] font-bold rounded-md opacity-0 group-hover:group-hover/item:opacity-0 pointer-events-none group-hover/item:opacity-100 max-lg:hidden transition-all duration-200 shadow-xl whitespace-nowrap z-50 transform scale-95 origin-left group-hover/item:scale-100"
                 style={{ left: dir === 'rtl' ? 'auto' : '100%', right: dir === 'rtl' ? '100%' : 'auto', marginRight: dir === 'rtl' ? '16px' : '0' }}
               >
-                {label} {pro && !isPro ? `(🔒 ${t('proFeature')})` : ''}
+                {label} {isItemLocked ? `(🔒 ${t('proFeature')})` : ''}
               </div>
             </button>
           );
