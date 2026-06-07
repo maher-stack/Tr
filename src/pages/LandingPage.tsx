@@ -185,19 +185,19 @@ export function LandingPage({ onGetStarted }: LandingPageProps) {
             <motion.div 
               key={i}
               variants={itemVariants}
-              className="group p-8 bg-white dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 rounded-3xl text-right ltr:text-left hover:border-blue-500/30 transition-all hover:shadow-2xl hover:shadow-blue-500/5 relative overflow-hidden"
+              whileHover={{ rotateY: 5, rotateX: 5, scale: 1.05 }}
+              className="group p-8 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl text-right ltr:text-left hover:border-blue-500/30 transition-all hover:shadow-2xl hover:shadow-blue-500/10 relative overflow-hidden preserve-3d cursor-default"
             >
-              <div className={`w-12 h-12 ${f.color} rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform`}>
+              {/* Tilted background effect */}
+              <div className={`absolute -right-10 -bottom-10 w-24 h-24 ${f.color} rounded-full rotate-45 group-hover:scale-150 transition-transform duration-500`}></div>
+              
+              <div className={`relative z-10 w-12 h-12 ${f.color} rounded-2xl flex items-center justify-center mb-6`}>
                 {f.icon}
               </div>
-              <h3 className="text-xl font-bold mb-3 text-slate-900 dark:text-white capitalize">{f.title}</h3>
-              <p className="text-sm text-slate-500 dark:text-slate-400 font-medium leading-relaxed">
+              <h3 className="relative z-10 text-xl font-bold mb-3 text-slate-900 dark:text-white capitalize group-hover:text-blue-600 transition-colors">{f.title}</h3>
+              <p className="relative z-10 text-sm text-slate-500 dark:text-slate-400 font-medium leading-relaxed">
                 {f.desc}
               </p>
-              
-              <div className="absolute right-6 bottom-6 opacity-0 group-hover:opacity-100 transition-opacity">
-                <CheckCircle2 className="w-5 h-5 text-blue-500/20" />
-              </div>
             </motion.div>
           ))}
         </motion.div>

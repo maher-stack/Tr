@@ -63,8 +63,8 @@ export function AuthPage({ onLogin, authError, loading = false, supabaseConfigur
   return (
     <div className={`flex-1 flex flex-col items-center justify-center p-6 min-h-screen bg-white dark:bg-[#090909] relative overflow-hidden text-slate-800 dark:text-white transition-colors duration-300`} dir={dir}>
       {/* Decorative ambient blobs */}
-      <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-blue-500/5 rounded-full filter blur-3xl pointer-events-none"></div>
-      <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-emerald-500/5 rounded-full filter blur-3xl pointer-events-none"></div>
+      <div className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] bg-blue-500/5 dark:bg-blue-600/5 rounded-full filter blur-[120px] pointer-events-none"></div>
+      <div className="absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] bg-blue-500/5 dark:bg-blue-600/5 rounded-full filter blur-[120px] pointer-events-none"></div>
 
       {/* Floating Controls */}
       <div className="absolute top-6 flex items-center gap-2">
@@ -91,13 +91,13 @@ export function AuthPage({ onLogin, authError, loading = false, supabaseConfigur
           <p className="text-slate-500 dark:text-gray-400 font-medium text-sm mt-1 mb-4">{t('appDescription')}</p>
 
           {supabaseConfigured ? (
-            <div className="inline-flex items-center gap-1.5 bg-emerald-500/10 border border-emerald-500/20 text-emerald-600 dark:text-emerald-400 text-[11px] px-3.5 py-1 rounded-full font-bold">
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+            <div className="inline-flex items-center gap-1.5 bg-blue-500/10 border border-blue-500/20 text-blue-600 dark:text-blue-400 text-[11px] px-3.5 py-1 rounded-full font-bold">
+              <span className="w-1.5 h-1.5 rounded-full bg-blue-500 animate-pulse"></span>
               {t('supabaseActive')}
             </div>
           ) : (
-            <div className="inline-flex items-center gap-1.5 bg-blue-500/10 border border-blue-500/20 text-blue-600 dark:text-blue-400 text-[11px] px-3.5 py-1 rounded-full font-bold">
-              <span className="w-1.5 h-1.5 rounded-full bg-blue-500"></span>
+            <div className="inline-flex items-center gap-1.5 bg-slate-500/10 border border-slate-500/20 text-slate-600 dark:text-slate-400 text-[11px] px-3.5 py-1 rounded-full font-bold">
+              <span className="w-1.5 h-1.5 rounded-full bg-slate-500"></span>
               {t('localStorageActive')}
             </div>
           )}
@@ -184,7 +184,7 @@ export function AuthPage({ onLogin, authError, loading = false, supabaseConfigur
                             setSelectedCountry(country);
                             setShowDropdown(false);
                           }}
-                          className={`w-full ${language === 'ar' ? 'text-right' : 'text-left'} px-4 py-2 hover:bg-slate-50 dark:hover:bg-[#222] transition-colors flex items-center justify-between text-xs ${selectedCountry.code === country.code ? 'text-blue-600 dark:text-emerald-400 font-bold' : 'text-slate-600 dark:text-gray-300'} cursor-pointer`}
+                          className={`w-full ${language === 'ar' ? 'text-right' : 'text-left'} px-4 py-2.5 hover:bg-slate-50 dark:hover:bg-[#222] transition-colors flex items-center justify-between text-xs ${selectedCountry.code === country.code ? 'text-blue-600 dark:text-blue-400 font-bold bg-blue-500/5' : 'text-slate-600 dark:text-gray-300'} cursor-pointer`}
                         >
                           <span className="flex items-center gap-2">
                             <span>{country.flag}</span>
@@ -206,13 +206,13 @@ export function AuthPage({ onLogin, authError, loading = false, supabaseConfigur
                   onChange={(e) => setPhone(e.target.value.replace(/[^0-9]/g, ''))}
                   disabled={loading}
                   placeholder={t('phonePlaceholder')}
-                  className="w-full bg-slate-50 dark:bg-[#161616] border border-slate-200 dark:border-[#2c2c2c] rounded-xl px-4 py-3 placeholder-slate-400 dark:placeholder-gray-700 text-slate-800 dark:text-white text-xs font-mono focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 transition-all text-left disabled:opacity-50"
+                  className="w-full bg-slate-50 dark:bg-[#161616] border border-slate-200 dark:border-[#2c2c2c] rounded-xl px-4 py-3 placeholder-slate-400 dark:placeholder-gray-700 text-slate-800 dark:text-white text-xs font-mono focus:outline-none focus:ring-1 focus:ring-blue-600 focus:border-blue-600 transition-all text-left disabled:opacity-50"
                   dir="ltr"
                 />
               </div>
             </div>
 
-            <div className="mt-2.5 flex items-start gap-1.5 text-[11px] text-blue-600 dark:text-emerald-500/90 leading-relaxed bg-blue-500/5 dark:bg-emerald-500/5 p-2.5 rounded-xl border border-blue-500/10 dark:border-emerald-500/10">
+            <div className="mt-2.5 flex items-start gap-1.5 text-[11px] text-blue-600 dark:text-blue-400/90 leading-relaxed bg-blue-500/5 p-3 rounded-xl border border-blue-500/10">
               <MessageSquare className="w-3.5 h-3.5 mt-0.5 shrink-0" />
               <span>{t('phoneNotice')}</span>
             </div>
@@ -221,7 +221,7 @@ export function AuthPage({ onLogin, authError, loading = false, supabaseConfigur
           <button
             type="submit"
             disabled={loading}
-            className="w-full py-4 px-4 bg-blue-600 text-white text-xs rounded-xl font-bold hover:bg-blue-500 active:scale-[0.98] transition-all mt-4 flex items-center justify-center gap-2 shadow-lg shadow-blue-600/10 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+            className="w-full py-4.5 px-4 bg-blue-600 text-white text-sm rounded-xl font-bold hover:bg-blue-500 active:scale-[0.98] transition-all mt-6 flex items-center justify-center gap-2 shadow-xl shadow-blue-600/10 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
           >
             {loading ? (
               <span className="flex items-center gap-2 animate-pulse">
@@ -229,18 +229,18 @@ export function AuthPage({ onLogin, authError, loading = false, supabaseConfigur
               </span>
             ) : (
               <>
-                {isLogin ? <LogIn className="w-4 h-4 ml-1" /> : <UserPlus className="w-4 h-4 ml-1" />}
+                {isLogin ? <LogIn className="w-5 h-5 ml-1" /> : <UserPlus className="w-5 h-5 ml-1" />}
                 {isLogin ? t('loginBtn') : t('signupBtn')}
               </>
             )}
           </button>
         </form>
 
-        <div className="mt-8 text-center border-t border-slate-100 dark:border-[#1a1a1a] pt-6">
+        <div className="mt-10 text-center border-t border-slate-100 dark:border-[#1a1a1a] pt-8">
           <button
             disabled={loading}
             onClick={() => setIsLogin(!isLogin)}
-            className="text-xs text-slate-500 dark:text-gray-400 hover:text-blue-600 dark:hover:text-emerald-400 transition-colors disabled:opacity-50 cursor-pointer font-medium"
+            className="text-xs text-slate-500 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors disabled:opacity-50 cursor-pointer font-bold"
           >
             {isLogin ? t('noAccount') : t('hasAccount')}
           </button>

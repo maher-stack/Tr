@@ -43,7 +43,6 @@ export default function App() {
     currentUser, 
     login, 
     logout, 
-    upgradeToPro, 
     updateUser,
     isTrialActive,
     isTrialExpired,
@@ -74,7 +73,8 @@ export default function App() {
   const isPro = currentUser.isPro;
 
   const handleUpgrade = () => {
-    upgradeToPro();
+    // Calling database directly from pricing page or handling upgrade via profile update
+    updateUser({ isPro: true, renewalAlertDays: 3 });
     setCurrentPage('dashboard');
   };
 
